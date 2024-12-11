@@ -11,7 +11,7 @@ console.log('API REST con NodeJs para app tipo Spotify')
 connection();
 //crear servidor node
 const app = express();
-const port = 3910;
+const port = process.env.PORT || 3910;
 //configurar cors
 app.use(cors());
 //convertir datos del body a objetos js
@@ -31,22 +31,6 @@ app.use("/api/artist",ArtistRoutes);
 app.use("/api/playlist", PlaylistRoutes);
 app.use(express.static(path.join(__dirname, 'dist')));
 
-//ruta de pruebas
-app.get("/ruta-probando", (req, res) =>{
-
-    return res.status(200).send([{
-        'id': 12,
-        'nombre': 'julian',
-        'apellido': 'Garcia' 
-    },
-    {
-        'id': 13,
-        'nombre': 'Milena',
-        'apellido': 'Sabattino'
-    }
-    ]);
-
-})
 
 // Redirige cualquier solicitud que no coincida con una ruta estática al index.html.
 app.get('*', (req, res) => {

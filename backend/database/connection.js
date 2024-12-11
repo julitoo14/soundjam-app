@@ -1,18 +1,30 @@
 const mongoose = require('mongoose');
-var databaseName = 'Spotify';
-if(process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development'){
-    databaseName = 'testdb'
+const dotenv = require('dotenv');
+
+// Carga las variables de entorno
+dotenv.config();
+
+let databaseName = process.env.DATABASE_NAME;
+
+if (process.env.NODE_ENV === 'test') {
+  databaseName = process.env.TEST_DATABASE_NAME; // Usa la base de datos de pruebas si está en modo test
 }
-const password = process.env.PASSWORD;
-const connection = async() =>{
-    try{
-        await mongoose.connect(`mongodb+srv://juuligarcia2208:${password}@spotify.6ckpon2.mongodb.net/?retryWrites=true&w=majority&appName=Spotify`,
-        {dbName: databaseName});
-        console.log('Connected to Database ' + databaseName);
-    }catch(error){
-        console.log(error);
-        throw new Error("No se ha establecido la conexion a la base de datos" + error);
-    }
-}
+
+
+const connection = async () => {
+  try {
+    await mongoose.connect(
+      `${process.env.DB_URI_BASE}`,
+      {
+        dbName: databaseName,
+      }
+    );
+
+    console.log('Connected to Database: ' + databaseName);
+  } catch (error) {
+    console.error(error);
+    throw new Error('No se ha establecido la conexión a la base de datos');
+  }
+};
 
 module.exports = connection;
