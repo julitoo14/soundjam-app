@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Gabarito', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+:root{
+  --primary-color : #a600ff;
+  --darker-background-color: #000000;
+  --darker-background-color-hover: rgba(2, 1, 1, 0.82);
+  --background-color: #13131EFF;
+  --background-color-hover: rgba(19, 19, 30, 0.82);
+  --muted-text-color: rgba(120, 117, 117, 0.71);
+  --text-color: rgba(255, 255, 255, 0.87);
+  --error-color: #ff0033;
+
+}
