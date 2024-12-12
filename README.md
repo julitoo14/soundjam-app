@@ -92,72 +92,239 @@ Con el servidor backend ejecutándose y el frontend en modo desarrollo, abre tu 
 
 ¡Listo! Ahora puedes empezar a usar SoundJam.
 
-# 🧰 Endpoints disponibles
+# Documentación del modelo y rutas: Album
 
-## Albums
+## Modelo: Album
+El modelo **Album** representa los álbumes musicales que forman parte de la aplicación. Está definido en MongoDB utilizando Mongoose.
 
-`POST /api/album/save`
-
-Guarda un nuevo album en la base de datos
-
-| Parámetro     | Tipo        | Obligatorio | Descripción                                       |
-|---------------|-------------|-------------|---------------------------------------------------|
-| `artist`      | `ObjectId`  | Sí          | ID del artista al que pertenece el álbum.         |
-| `title`       | `String`    | Sí          | Título del álbum.                                 |
-| `description` | `String`    | No          | Breve descripción del álbum.                     |
-| `year`        | `Number`    | Sí          | Año de lanzamiento del álbum.                    |
-| `image`       | `String`    | No          | Nombre de la imagen asociada al álbum (por defecto: `default.png`). |
-| `created_at`  | `Date`      | No          | Fecha de creación del álbum (por defecto: fecha actual). |
-
-
-
-### 📥 Crear enlace corto
-`POST /api/shorten`
-
-Datos requeridos:
-```json
-{
-  "longUrl": "https://ejemplo.com",
-  "customAlias": "prueba"
-}
-```
-🚩 el url es obligatorio, sin embargo el alias es opcional
-
-Datos esperados:
-```json
-{
-  "message": "URL successfully shortened",
-  "shortUrl": "https://localhost:3000/prueba",
-}
+### Esquema del modelo
+```javascript
+const AlbumSchema = Schema({
+    artist: {
+        type: Schema.ObjectId, // Relación con el modelo Artist
+        ref: "Artist"
+    },
+    title: {
+        type: String,
+        required: true // El título del álbum es obligatorio
+    },
+    description: {
+        type: String, // Descripción opcional del álbum
+    },
+    year: {
+        type: Number,
+        required: true // Año de lanzamiento del álbum
+    },
+    image: {
+        type: String,
+        default: "default.png" // Imagen predeterminada si no se sube ninguna
+    },
+    created_at: {
+        type: Date,
+        default: Date.now // Fecha de creación del álbum
+    }
+});
 ```
 
-### 🔗 Redirección de enlace corto
+### Propiedades del modelo
+| Propiedad     | Tipo             | Requerido | Descripción                                |
+|---------------|------------------|-----------|--------------------------------------------|
+| `artist`      | ObjectId         | Sí        | Referencia al modelo **Artist**.          |
+| `title`       | String           | Sí        | Título del álbum.                         |
+| `description` | String           | No        | Descripción opcional del álbum.           |
+| `year`        | Number           | Sí        | Año de lanzamiento del álbum.             |
+| `image`       | String           | No        | Ruta de la imagen del álbum.              |
+| `created_at`  | Date             | No        | Fecha de creación. Valor por defecto: `Date.now`. |
 
-`GET /:id`
+---
 
-Al acceder a ese endpoint, el sistema redirigirá automáticamente al enlace correspondiente.
+## Rutas del controlador: Album
+### Prefijo de las rutas: `/api/album`
 
-### 📑 Consulta estadisticas de enlace corto
+### 1. **Prueba**
+**Descripción:** Ruta de prueba para verificar que el controlador funciona correctamente.
+- **Método:** `GET`
+- **URL:** `/api/album/prueba`
+- **Autenticación:** No
 
-`GET /api/metrics/:id` debe buscarse por el alias personalizado o el id asignado automaticamente
-
-Datos esperados:
+**Respuesta de ejemplo:**
 ```json
 {
-  "_id": "B1vRcpBEJl",
-  "longUrl": "https://prueba.com",
-  "shortUrl": "https://localhost:3000/prueba",
-  "customAlias": "prueba",
-  "clicks": "10",
-  "created_at": "date",
-  "dailyClicks": [],
-  "clicksByCountry": [],
-  "clicksByCity": [],
+    "message": "Prueba de controlador Album."
 }
 ```
+
+---
+
+### 2. **Guardar un álbum**
+**Descripción:** Crear un nuevo álbum.
+- **Método:** `POST`
+- **URL:** `/api/album/save`
+- **Autenticación:** Sí
+- **Cuerpo (JSON):**
+    ```json
+    {
+        "artist": "<ID del artista>",
+        "title": "<Título del álbum>",
+        "description": "<Descripción opcional>",
+        "year": <Año de lanzamiento>
+    }
+    ```
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "album": {
+        "_id": "<ID del álbum>",
+        "artist": "<ID del artista>",
+        "title": "<Título>",
+        "description": "<Descripción>",
+        "year": 2024,
+        "image": "default.png",
+        "created_at": "<Fecha de creación>"
+    }
+}
+```
+
+---
+
+### 3. **Obtener un álbum por ID**
+**Descripción:** Obtener información de un álbum por su ID.
+- **Método:** `GET`
+- **URL:** `/api/album/one/:id`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "album": {
+        "_id": "<ID del álbum>",
+        "artist": {
+            "_id": "<ID del artista>",
+            "name": "<Nombre del artista>"
+        },
+        "title": "<Título>",
+        "description": "<Descripción>",
+        "year": 2024,
+        "image": "default.png",
+        "created_at": "<Fecha de creación>"
+    }
+}
+```
+
+---
+
+### 4. **Buscar álbumes**
+**Descripción:** Buscar álbumes por un término.
+- **Método:** `GET`
+- **URL:** `/api/album/search/:term`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "albums": [
+        {
+            "_id": "<ID del álbum>",
+            "title": "<Título>",
+            "description": "<Descripción>",
+            "year": 2024,
+            "image": "default.png"
+        }
+    ]
+}
+```
+
+---
+
+### 5. **Listar álbumes de un artista**
+**Descripción:** Obtener una lista de álbumes asociados a un artista.
+- **Método:** `GET`
+- **URL:** `/api/album/list/:artistId`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "albums": [
+        {
+            "_id": "<ID del álbum>",
+            "title": "<Título>",
+            "year": 2024
+        }
+    ]
+}
+```
+
+---
+
+### 6. **Actualizar un álbum**
+**Descripción:** Actualizar los datos de un álbum por su ID.
+- **Método:** `PUT`
+- **URL:** `/api/album/update/:id`
+- **Autenticación:** Sí
+- **Cuerpo (JSON):**
+    ```json
+    {
+        "title": "<Nuevo título>",
+        "description": "<Nueva descripción>",
+        "year": <Nuevo año>
+    }
+    ```
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "album": {
+        "_id": "<ID del álbum>",
+        "title": "<Nuevo título>",
+        "description": "<Nueva descripción>",
+        "year": 2025
+    }
+}
+```
+
+---
+
+### 7. **Subir una imagen para un álbum**
+**Descripción:** Subir una imagen asociada a un álbum.
+- **Método:** `PUT`
+- **URL:** `/api/album/upload/:id`
+- **Autenticación:** Sí
+- **Archivo:** Enviar un archivo en el campo `file0`.
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "image": "album-1234567890.png"
+}
+```
+
+---
+
+### 8. **Eliminar un álbum**
+**Descripción:** Eliminar un álbum por su ID.
+- **Método:** `DELETE`
+- **URL:** `/api/album/remove/:id`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "message": "Álbum eliminado correctamente."
+}
+```
+
 
 ## 📽️ Demo en produccion 
-Puedes probar la aplicación aquí: [URL Demo](https://short.juliangarciasuarez.tech)
+Puedes probar la aplicación aquí: [URL Demo](https://soundjam.juliangarciasuarez.tech)
 
 
 ## 🤝 Contribuciones
