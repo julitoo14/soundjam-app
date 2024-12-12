@@ -141,10 +141,6 @@ const login = async (req, res) => {
   });
 }
 
-const signOut = async (req, res) => {
-  
-}
-
 const profile = async (req, res) => {
   //recoger id usuario de la url
   const id = req.params.id;
