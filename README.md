@@ -4,17 +4,21 @@
 
 ## Índice
 
+- [Modelo: Artist](#modelo-artist)
+- [Rutas del controlador: Artist](#rutas-del-controlador-artist)
+
+- [Modelo: Album](#modelo-album)
+- [Rutas del controlador: Album](#rutas-del-controlador-album)
+
+- [Modelo: Song](#modelo-song)
+- [Rutas del controlador: Song](#rutas-del-controlador-song)
+
 - [Modelo: User](#modelo-user)
-  - [Esquema del modelo](#esquema-del-modelo)
-  - [Propiedades del modelo](#propiedades-del-modelo)
 - [Rutas del controlador: User](#rutas-del-controlador-user)
-  - [Prueba](#1-prueba)
-  - [Registro de usuario](#2-registro-de-usuario)
-  - [Inicio de sesión](#3-inicio-de-sesión)
-  - [Obtener perfil de usuario](#4-obtener-perfil-de-usuario)
-  - [Actualizar datos del usuario](#5-actualizar-datos-del-usuario)
-  - [Subir avatar](#6-subir-avatar)
-  - [Obtener avatar](#7-obtener-avatar)
+
+- [Modelo: Playlist](#modelo-playlist)
+- [Rutas del controlador: Playlist](#rutas-del-controlador-playlist])
+
 
 
 ---
