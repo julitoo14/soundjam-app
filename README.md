@@ -4,7 +4,7 @@
 
 ## Índice
 
-- [Descripcion](#descripción)
+- [Descripción](#✨-descripción)
 - [Características](#características)
 - [Tecnologías utilizadas](#tecnologías-utilizadas)
 - [Instalación y uso](#instalación-y-uso)
