@@ -4,12 +4,12 @@
 
 ## Índice
 
--[Descripcion](#descripción)
--[Características](#características)
--[Tecnologías utilizadas](#tecnologías-utilizadas)
--[Instalación y uso](#instalación-y-uso)
--[Demo en produccion](#️demo-en-produccion)
--[Contribuciones](#contribuciones)
+- [Descripcion](#descripción)
+- [Características](#características)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Instalación y uso](#instalación-y-uso)
+- [Demo en produccion](#️demo-en-produccion)
+- [Contribuciones](#contribuciones)
 
 
 Modelos:
