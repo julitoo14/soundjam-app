@@ -90,8 +90,6 @@ Con el servidor backend ejecutándose y el frontend en modo desarrollo, abre tu 
 
 `http://localhost:3910`
 
-¡Listo! Ahora puedes empezar a usar SoundJam.
-
 # Documentación del modelo y rutas: Album
 
 ## Modelo: Album
@@ -321,6 +319,216 @@ const AlbumSchema = Schema({
     "message": "Álbum eliminado correctamente."
 }
 ```
+# Documentación del modelo y rutas: Artist
+
+## Modelo: Artist
+El modelo **Artist** representa a los artistas musicales dentro de la aplicación. Está definido en MongoDB utilizando Mongoose.
+
+### Esquema del modelo
+```javascript
+const ArtistSchema = Schema({
+    name: {
+        type: String,
+        required: true // El nombre del artista es obligatorio
+    },
+    description: {
+        type: String, // Descripción opcional del artista
+    },
+    image: {
+        type: String,
+        default: "default.png" // Imagen predeterminada si no se sube ninguna
+    }
+});
+```
+
+### Propiedades del modelo
+| Propiedad     | Tipo   | Requerido | Descripción                                |
+|---------------|--------|-----------|--------------------------------------------|
+| `name`        | String | Sí        | Nombre del artista.                        |
+| `description` | String | No        | Descripción opcional del artista.           |
+| `image`       | String | No        | Ruta de la imagen del artista.             |
+
+---
+
+## Rutas del controlador: Artist
+### Prefijo de las rutas: `/api/artist`
+
+### 1. **Prueba**
+**Descripción:** Ruta de prueba para verificar que el controlador funciona correctamente.
+- **Método:** `GET`
+- **URL:** `/api/artist/prueba`
+- **Autenticación:** No
+
+**Respuesta de ejemplo:**
+```json
+{
+    "message": "Prueba de controlador Artist."
+}
+```
+
+---
+
+### 2. **Guardar un artista**
+**Descripción:** Crear un nuevo artista.
+- **Método:** `POST`
+- **URL:** `/api/artist/save`
+- **Autenticación:** Sí
+- **Cuerpo (JSON):**
+    ```json
+    {
+        "name": "<Nombre del artista>",
+        "description": "<Descripción opcional>"
+    }
+    ```
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "message": "Se ha guardado el artista",
+    "artist": {
+        "_id": "<ID del artista>",
+        "name": "<Nombre>",
+        "description": "<Descripción>",
+        "image": "default.png"
+    }
+}
+```
+
+---
+
+### 3. **Obtener un artista por ID**
+**Descripción:** Obtener información de un artista por su ID.
+- **Método:** `GET`
+- **URL:** `/api/artist/one/:id`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "message":"Accion de sacar un artista",
+    "artist": {
+        "_id": "<ID del artista>",
+        "name": "<Nombre>",
+        "description": "<Descripción>",
+        "image": "default.png"
+    }
+}
+```
+
+---
+
+### 4. **Listar todos los artistas**
+**Descripción:** Obtener una lista de todos los artistas, paginados.
+- **Método:** `GET`
+- **URL:** `/api/artist/list/:page?`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "artists": [
+        {
+            "_id": "<ID del artista>",
+            "name": "<Nombre>",
+            "description": "<Descripción>",
+            "image": "default.png"
+        }
+    ],
+    "page": 1,
+    "total": 10
+}
+```
+
+---
+
+### 5. **Actualizar un artista**
+**Descripción:** Actualizar los datos de un artista por su ID.
+- **Método:** `PUT`
+- **URL:** `/api/artist/update/:id`
+- **Autenticación:** Sí
+- **Cuerpo (JSON):**
+    ```json
+    {
+        "name": "<Nuevo nombre>",
+        "description": "<Nueva descripción>"
+    }
+    ```
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "artist": {
+        "_id": "<ID del artista>",
+        "name": "<Nuevo nombre>",
+        "description": "<Nueva descripción>",
+        "image": "default.png"
+    }
+}
+```
+
+---
+
+### 6. **Subir una imagen para un artista**
+**Descripción:** Subir una imagen asociada a un artista.
+- **Método:** `PUT`
+- **URL:** `/api/artist/upload/:id`
+- **Autenticación:** Sí
+- **Archivo:** Enviar un archivo en el campo `file0`.
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "artist": {
+        "_id": "<ID del artista>",
+        "name": "<nombre del artista>",
+        "description": "<descripcion del artista>",
+        "image": "artist-1234567890.png" //nueva imagen
+    }
+    "image": "artist-1234567890.png"
+}
+```
+
+---
+
+### 7. **Eliminar un artista**
+**Descripción:** Eliminar un artista por su ID.
+- **Método:** `DELETE`
+- **URL:** `/api/artist/remove/:id`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "message": "Artista eliminado correctamente.",
+    "artistDeleted": {
+        "_id": "<ID del artista>",
+        "name": "<nombre del artista>",
+        "description": "<descripcion del artista>",
+        "image": "artist-1234567890.png" 
+    },
+    "albumDeleted": [],
+    "songDeleted": []
+}
+```
+
+---
+
+### 8. **Mostrar imagen de un artista**
+**Descripción:** Obtener una imagen asociada a un artista por su nombre de archivo.
+- **Método:** `GET`
+- **URL:** `/api/artist/image/:file`
+- **Autenticación:** No
+
+**Respuesta de ejemplo:**
+La imagen se devuelve como contenido binario o un error si no existe.
+
+
 
 
 ## 📽️ Demo en produccion 

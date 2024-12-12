@@ -17,4 +17,3 @@ const ArtistSchema = Schema({
 })
 
 module.exports = model("Artist", ArtistSchema, "artists");
-                //modelo q uso en Node ---    el de la base de datos
