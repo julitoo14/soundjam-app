@@ -24,7 +24,7 @@ Endpoints:
 - [Album](#rutas-del-controlador-album)
 - [Song](#rutas-del-controlador-song)
 - [User](#rutas-del-controlador-user)
-- [Playlist](#rutas-del-controlador-playlist])
+- [Playlist](#rutas-del-controlador-playlist)
 
 
 
