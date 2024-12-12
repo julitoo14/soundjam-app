@@ -4,20 +4,34 @@
 
 ## Índice
 
-- [Modelo: Artist](#modelo-artist)
-- [Rutas del controlador: Artist](#rutas-del-controlador-artist)
+-[Descripcion](#descripción)
+-[Características](#características)
+-[Tecnologías utilizadas](#tecnologías-utilizadas)
+-[Instalación y uso](#instalación-y-uso)
+-[Demo en produccion](#️demo-en-produccion)
+-[Contribuciones](#contribuciones)
 
-- [Modelo: Album](#modelo-album)
-- [Rutas del controlador: Album](#rutas-del-controlador-album)
 
-- [Modelo: Song](#modelo-song)
-- [Rutas del controlador: Song](#rutas-del-controlador-song)
+Modelos:
+- [Artist](#modelo-artist)
+- [Album](#modelo-album)
+- [Song](#modelo-song)
+- [User](#modelo-user)
+- [Playlist](#modelo-playlist)
 
-- [Modelo: User](#modelo-user)
-- [Rutas del controlador: User](#rutas-del-controlador-user)
+Endpoints:
+- [Artist](#rutas-del-controlador-artist)
+- [Album](#rutas-del-controlador-album)
+- [Song](#rutas-del-controlador-song)
+- [User](#rutas-del-controlador-user)
+- [Playlist](#rutas-del-controlador-playlist])
 
-- [Modelo: Playlist](#modelo-playlist)
-- [Rutas del controlador: Playlist](#rutas-del-controlador-playlist])
+
+
+
+
+
+
 
 
 
