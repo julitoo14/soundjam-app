@@ -4,7 +4,7 @@
 
 ## Índice
 
-- [Descripcion](#✨-descripcion)
+- [Descripcion](#descripcion)
 - [Caracteristicas](#caracteristicas)
 - [Tecnologias utilizadas](#tecnologias-utilizadas)
 - [Instalacion y uso](#instalacion-y-uso)
@@ -37,14 +37,14 @@ Endpoints:
 
 ---
 
-## ✨ Descripcion
+## Descripcion
 SoundJam es una aplicacion de musica que permite a usuarios registrados (o invitados) escuchar su musica y artistas favoritos, asi como tambien crear sus listas de reproduccion. Los usuarios admin, pueden cargar nuevos artistas, nuevos albums y nuevas canciones.
 
 Este proyecto está compuesto por un **backend con Node.js y Express** y un **frontend con Vue.js**
 
 ---
 
-## 📦 Caracteristicas
+## Caracteristicas
 
 ### Backend
 - **Autenticacion JWT.**
@@ -58,7 +58,7 @@ Este proyecto está compuesto por un **backend con Node.js y Express** y un **fr
 
 ---
 
-## 🛠️ Tecnologias utilizadas
+## Tecnologias utilizadas
 ### Backend
 - **Node.js**
 - **Express.js**
@@ -70,7 +70,7 @@ Este proyecto está compuesto por un **backend con Node.js y Express** y un **fr
 
 ---
 
-## 🖥️ Instalacion y uso
+## Instalacion y uso
 
 ### 1. Clona el repositorio
 ```bash
@@ -1251,11 +1251,11 @@ El archivo de avatar se devuelve como contenido binario.
 
 
 
-## 📽️ Demo en produccion 
+## Demo en produccion 
 Puedes probar la aplicación aquí: [Demo](https://soundjam.juliangarciasuarez.tech)
 
 
-## 🤝 Contribuciones
+## Contribuciones
 ¡Las contribuciones son bienvenidas! Si encuentras un error, deseas agregar una funcionalidad o mejorar la documentación, abre un Issue o un Pull Request en el repositorio.
 
 
