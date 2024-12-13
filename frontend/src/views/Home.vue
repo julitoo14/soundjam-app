@@ -1,104 +1,100 @@
 <template>
-  <div class="homePage">
-    <div class="hero">
-      <h3>Welcome {{ nick }} to <span class="text-pri">SoundJam!</span></h3>
+  <div class="bg-gray-950 p-6">
+
+    <div class="text-center relative">
+      <h3 class="text-white text-lg">
+        Welcome {{ nick }} to <span class=" text-purple-600">SoundJam!</span>
+      </h3>
+      <button v-if="!showSearchBar" @click="showSearchBar = !showSearchBar"
+        class="absolute right-0 md:right-8 top-0 h-8 w-8 md:h-10 md:w-10">
+        <Search />
+      </button>
+      <div class="relative" v-if="showSearchBar">
+        <input
+          ref="searchInput"
+          class="z-0 w-full bg-gray-700 text-white placeholder-gray-400 p-4 pr-12 rounded focus:outline-none focus:ring focus:ring-purple-600"
+          v-model="searchTerm" @input="search" type="text"
+          placeholder="Search for your songs, artists, albums, playlists" />
+        <button @click="showSearchBar = !showSearchBar ; searchTerm = ''"
+          class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full h-8 w-8 flex items-center justify-center">
+          X
+        </button>
+      </div>
+
     </div>
-    <div style="width: 100%;">
-      <input
-      class="searchbar-full"
-      v-model="searchTerm"
-      @input="search"
-      type="text"
-      placeholder="Search for your songs, artists, albums, playlists"
-      />
-    </div>
 
-    <div v-if="searchTerm" class="searchResults">
-      <ul ref="list" class="list">
-        <li class="item" v-for="song in searchSongsResults" :key="song._id">
-          <RouterLink class="link" :to="`/album/${song.album}`">
-            <p class="result-text">Song</p>
-            <p class="result-text">{{ song.name }}</p>
-            <p v-if="!isMobile" class="third-text">{{ song.duration }}</p>
+    <div v-if="searchTerm && !loading" class="w-full px-4 py-2">
+      <ul ref="list" class="space-y-4">
+        <li class="flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults" :key="song._id">
+          <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${song.album}`">
+            <p class="text-sm">Song</p>
+            <p class="text-sm font-semibold">{{ song.name }}</p>
+            <p v-if="!isMobile" class="text-xs text-gray-400">{{ song.duration }}</p>
           </RouterLink>
         </li>
 
-        <li class="item" v-for="artist in state.artists" :key="artist._id">
-          <RouterLink class="link" :to="`/artist/${artist._id}`">
-            <p class="result-text">Artist</p>
-            <p class=" result-text">{{ artist.name }}</p>
-            <img
-              v-if="!isMobile"
-              :src="`${API_BASE_URL}/artist/image/${artist.image}`"
-              class=" mini-img "
-            />
+        <li class="flex items-center bg-gray-800 p-4 rounded-lg"  v-for="artist in searchArtistResults" :key="artist._id">
+          <RouterLink class="flex justify-between items-center w-full text-white" :to="`/artist/${artist._id}`">
+            <p class="text-sm">Artist</p>
+            <p class="text-sm font-semibold">{{ artist.name }}</p>
+            <img v-if="!isMobile" :src="`${API_BASE_URL}/artist/image/${artist.image}`"
+              class="w-12 h-12 object-cover rounded-full" />
           </RouterLink>
         </li>
 
-        <li class="item" v-for="playlist in playlists" :key="playlist._id">
-          <RouterLink class="link" :to="`/playlist/${playlist._id}`">
-            <p class="result-text">Playlist</p>
-            <p class=" result-text">{{ playlist.name }}</p>
-            <p v-if="!isMobile" class="third-text ">{{ playlist.songs.length }} Songs</p>
+        <li class="flex items-center bg-gray-800 p-4 rounded-lg" v-for="album in searchAlbumsResults" :key="album._id">
+          <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${album._id}`">
+            <p class="text-sm">Album</p>
+            <p class="text-sm font-semibold">{{ album.title }}</p>
+            <img v-if="!isMobile" :src="`${API_BASE_URL}/album/image/${album.image}`"
+              class="w-12 h-12 object-cover rounded-lg" alt="" />
           </RouterLink>
         </li>
 
-        <li class="item" v-for="album in albums" :key="album._id">
-          <RouterLink class="link" :to="`/album/${album._id}`">
-            <p class="result-text">Album</p>
-            <p class="result-text">{{ album.title }}</p>
-            <img
-              v-if="!isMobile"
-              class="mini-img"
-              :src="`${API_BASE_URL}/album/image/${album.image}`"
-              alt=""
-            />
-          </RouterLink>
-        </li>
+        <li v-if="searchSongsResults.length === 0 && searchAlbumsResults.length === 0 && searchArtistResults.length === 0"
+          class="text-white text-center">No results found</li>
       </ul>
     </div>
+    <div v-else-if="loading" class="flex justify-center items-center h-96">
+      <div class="loader"></div>
+    </div>
+    
 
-    <div class="container-fluid homeScreen" v-else>
-      <h2 class="text-pri">Albums</h2>
-      <div class="albums">
-        <Album
-        class="album"
-        v-for="album in albums"
-        :key="album._id"
-        :album="album"
-        :albumImage="`${API_BASE_URL}/album/image/${album.image}`"
-        />
+    <div v-else class="p-4">
+      <h2 class="text-purple-600 text-4xl font-bold py-2">Albums</h2>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Album class="bg-gray-800 p-2 rounded-lg hover:scale-105 transition" v-for="album in showedAlbums" :key="album._id" :album="album"
+          :albumImage="`${API_BASE_URL}/album/image/${album.image}`" />
       </div>
-      <h2 class="text-pri">Artists</h2>
-      <div class="albums">
-        <Artist
-        v-for="artist in state.artists"
-        :key="artist._id"
-        :artist="artist"
-        :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`"
-        class="album"
-        />
+      <h2 class="text-purple-600 text-4xl font-bold py-2">Artists</h2>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Artist class="bg-gray-800 p-2 rounded-lg hover:scale-105 transition" v-for="artist in showedArtists" :key="artist._id" :artist="artist"
+          :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
       </div>
     </div>
-
-
-
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
-import {getPlaylists, getArtists, getRandomAlbums, getSongsBySearch, getAlbumsBySearch} from "../composables/apiServices";
+import { ref, onMounted, reactive, onBeforeUnmount, nextTick } from "vue";
+import {
+  getPlaylists,
+  getArtists,
+  getRandomAlbums,
+  getSongsBySearch,
+  getAlbumsBySearch,
+  getArtistsBySearch
+} from "../composables/apiServices";
 import { API_BASE_URL } from "../../config";
 import Album from "../components/Album.vue";
 import Artist from "../components/Artist.vue";
+import Search from "../assets/icons/Search.vue"
 
 const token = localStorage.getItem("token");
 const decoded = JSON.parse(atob(token.split(".")[1]));
 const nick = decoded.nick;
-const userId = decoded.id;
-console.log(userId);
-const showTable = ref(false);
+const loading = ref(false);
+
 const playlists = ref([]);
 const albums = ref([]);
 const state = reactive({
@@ -107,27 +103,54 @@ const state = reactive({
   imageUrl: "",
 });
 const searchTerm = ref("");
-const searchArtistsResults = ref([]);
-const searchPlaylistsResults = ref([]);
 const searchSongsResults = ref([]);
-
+const searchAlbumsResults = ref([]);
+const searchArtistResults = ref([]);
 const isMobile = ref(window.innerWidth <= 768);
+const showSearchBar = ref(false);
+const searchInput = ref(null);
+const showedAlbums = ref([]);
+const showedArtists = ref([]);
+
+
+const handleKeyDown = (event) => {
+  if (event.key === "Escape" && showSearchBar.value) {
+    // Cerrar la barra al presionar Escape
+    showSearchBar.value = false;
+    searchTerm.value = "";
+  } else if (!showSearchBar.value && event.key.length === 1 && !event.metaKey) {
+    // Abrir la barra al presionar cualquier tecla alfabética
+    showSearchBar.value = true;
+    
+    nextTick(() => {
+      searchInput.value?.focus();
+    });
+  }
+};
+
+
 
 const updateIsMobile = () => {
   isMobile.value = window.innerWidth <= 768;
 };
 
 onMounted(() => {
-  window.addEventListener('resize', updateIsMobile);
+  window.addEventListener("resize", updateIsMobile);
+  window.addEventListener("keydown", handleKeyDown);
+  fetchPlaylists();
+  fetchArtists();
+  fetchAlbums();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", handleKeyDown);
+  window.removeEventListener("resize", updateIsMobile);
 });
 
 const fetchPlaylists = async () => {
   try {
     const res = await getPlaylists();
     playlists.value = res.playlists;
-    if (playlists.value.length > 0) {
-      showTable.value = true;
-    }
   } catch (err) {
     console.log(err);
   }
@@ -137,6 +160,7 @@ const fetchArtists = async () => {
   try {
     const res = await getArtists();
     state.artists = res.artists;
+    showedArtists.value = res.artists.filter((artist, index) => index < 5);
   } catch (err) {
     console.log(err.message);
   }
@@ -146,256 +170,41 @@ const fetchAlbums = async () => {
   try {
     const res = await getRandomAlbums();
     albums.value = res.albums;
+    showedAlbums.value = res.albums.filter((album, index) => index < 5);
   } catch (err) {
     console.log(err.message);
   }
 };
 
-const searchArtists = async () => {
-  searchArtistsResults.value = state.artists.filter((artist) =>
-    artist.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-  );
-  state.artists = searchArtistsResults.value;
-};
-
-const searchPlaylists = async () => {
-  searchPlaylistsResults.value = playlists.value.filter((playlist) =>
-    playlist.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-  );
-  playlists.value = searchPlaylistsResults.value;
-};
-
-const searchSongs = async () => {
-  const res = await getSongsBySearch(searchTerm.value);
-  searchSongsResults.value = res.songs;
-};
-
-const searchAlbums = async () => {
-  const res = await getAlbumsBySearch(searchTerm.value);
-  albums.value = res.albums;
-};
-
 const search = async () => {
+  loading.value = true;
   if (searchTerm.value.length > 0) {
-    searchArtists();
-    searchPlaylists();
-    searchSongs();
-    searchAlbums();
+    const resSongs = await getSongsBySearch(searchTerm.value);
+    const resAlbums = await getAlbumsBySearch(searchTerm.value);
+    const resArtists = await getArtistsBySearch(searchTerm.value);
+    searchSongsResults.value = resSongs.songs;
+    searchAlbumsResults.value = resAlbums.albums;
+    searchArtistResults.value = resArtists.artists;
   } else {
     fetchArtists();
     fetchPlaylists();
     fetchAlbums();
   }
+  loading.value=false;
 };
-
-onMounted(() => {
-  fetchPlaylists();
-  fetchArtists();
-  fetchAlbums();
-});
 </script>
 
 <style scoped>
-
-.item {
-  background-color: rgba(44, 42, 44, 0.56);
-  width: 100%;
-  height: 85px;
-  display: flex;
-  border: rgba(53, 53, 53, 0.37) solid 1px;
-}
-
-.text-pri{
+.text-primary {
   color: var(--primary-color);
 }
 
-.item:hover {
-  background-color: rgba(24, 23, 23, 0.637);
-}
-.link {
-  width: 100%;
-  text-decoration: none;
-  color: white;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin: auto;
-}
-
-.link p{
-  margin: 0;
-}
-
-.mini-img {
-  max-width: 80px;
-  object-fit: cover;
-}
-
-.homeScreen{
-  background-color: var(--background-color);
-  margin-bottom: 2em;
-  padding: 1em;
-}
-
-.list {
-  list-style: none;
-  padding: 0;
-}
-
-.homePage {
-  background: var(--darker-background-color);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  padding-bottom: 100px;
-}
-.searchbar-full {
-  width: 100%;
-  background-color: var(--background-color);
-  height: 60px;
-  text-align: center;
-  color: rgb(255, 255, 255);
-  margin-bottom: 1em;
-  font-size: large;
-  border: none;
-}
-
-.searchbar-full:focus {
-  outline: none;
-  color: var(--primary-color);
-  border: solid 1px var(--primary-color);
-}
-
-.searchbar-full::placeholder {
-  color: var(--muted-text-color);
-}
-
-.searchResults {
-  width: 70%;
-  overflow-y: auto;
-}
-
-.hero{
-  background-color: var(--darker-background-color);
-  width: 100%;
-  text-align: center;
-}
-
-.albums{
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    width: 100%;
-    margin: auto;
-    gap: 0.8em;
-  }
-
-
-  h1{
-    color: white;
-    font-size: 2em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-
-.album{
-  background-color: rgba(0, 0, 0, 0.795);
-}
-
-.result-text{
-  white-space: nowrap;      /* Evita que el texto se rompa en varias líneas */
-  overflow: hidden;         /* Oculta el texto que sobrepasa el límite de ancho */
-  text-overflow: ellipsis; /* Muestra los tres puntos (...) al final del texto */
-  max-width: 200px;
-  padding: 0;
-  margin: 0;
-}
-
-.third-text{
-  width: 80px;
-  text-align: center;
-}
-
-
-@media (max-width: 768px) {
-
-  .link{
-    font-size: 0.8em;
-  }
-
-  .result-text{
-    white-space: nowrap;      /* Evita que el texto se rompa en varias líneas */
-    overflow: hidden;         /* Oculta el texto que sobrepasa el límite de ancho */
-    text-overflow: ellipsis; /* Muestra los tres puntos (...) al final del texto */
-    width: 150px;
-  }
-
-  .homePage {
-    min-height: 100vh;
-  }
-
-
-  .hero{
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-    text-align: center;
-  }
-
-  .hero h1{
-    font-size: 1.5em;
-  }
-
-  .hero h5{
-    font-size: 1em;
-  }
-
-  .searchbar-full {
-    width: 100%;
-    border: none;
-    height: 2.5em;
-  }
-
-  .searchResults {
-    width: 90%;
-    overflow-y: auto;
-  }
-
-  .albums{
-    display: flex;
-    flex-direction: column;
-    overflow-x: auto;
-    width: 95%;
-    gap: 0.2em;
-  }
-
-
-
-  .item h3{
-    font-size: 1em;
-    width: 30%;
-    margin: auto;
-  }
-
-  .item h1{
-    font-size: 1.1em;
-    width: 30%;
-    margin: auto;
-  }
-
-  .item-link img{
-    width: 70px;
-    height: 70px;
-  }
-
-  h2{
-    padding: 20px;
-    text-align: center;
-  }
-
-
+.loader{
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
 }
 </style>

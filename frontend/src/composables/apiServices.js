@@ -73,6 +73,11 @@ export async function getAlbumsBySearch(search) {
     return response.data;
 }
 
+export async function getArtistsBySearch(search) {
+    const response = await axios.get(`${API_BASE_URL}/artist/search/${search}`,config);
+    return response.data;
+}
+
 // ----------------- DELETE -----------------
 export async function deleteArtist(id) {
     const response = await axios.delete(`${API_BASE_URL}/artist/remove/${id}`, config);

@@ -1,40 +1,28 @@
 <template>
-  <nav class="navbar">
-      <Div class="logo-div">
-        <img src="/logo.png" alt="logo" class="logo">
-      </Div>
-      <ul class="navbar-nav">
-        <li>
-          <RouterLink
-            class="link"
-            to="/"
-          >
-            <HomeIcon />
-            <span class="navbar-text">Home</span>
-          </RouterLink>
-        </li>
-
-        <li v-if="admin">
-          <RouterLink
-              class="link"
-              to="/createArtist"
-          >
-            <Add />
-            <span class="navbar-text">Create Artist</span>
-          </RouterLink>
-        </li>
-
-        <li>
-          <RouterLink
-            class="link"
-            :to="`/profile/${id}`"
-          >
-            <ProfileIcon />
-            <span class="navbar-text">Profile</span>
-          </RouterLink>
-        </li>
-
-      </ul>
+  <nav class="w-full bg-gray-900 flex items-center justify-center h-12 md:top-0 md:h-16 md:px-6 z-50">
+    <div class="absolute left-4 md:left-6">
+      <img src="/logo.png" alt="logo" class="w-10 h-10" />
+    </div>
+    <ul class="flex items-center gap-x-12 justify-center w-full md:w-auto md:gap-6">
+      <li>
+        <RouterLink to="/" class="flex items-center gap-2 text-white hover:text-gray-300">
+          <HomeIcon />
+          <span class="hidden md:inline text-sm">Home</span>
+        </RouterLink>
+      </li>
+      <li v-if="admin">
+        <RouterLink to="/createArtist" class="flex items-center gap-2 text-white hover:text-gray-300">
+          <Add />
+          <span class="hidden md:inline text-sm">Create Artist</span>
+        </RouterLink>
+      </li>
+      <li>
+        <RouterLink :to="`/profile/${id}`" class="flex items-center gap-2 text-white hover:text-gray-300">
+          <ProfileIcon />
+          <span class="hidden md:inline text-sm">Profile</span>
+        </RouterLink>
+      </li>
+    </ul>
   </nav>
 </template>
 
@@ -43,11 +31,7 @@ import { RouterLink } from "vue-router";
 import { watch, ref, onMounted } from "vue";
 import HomeIcon from "../assets/icons/HomeIcon.vue";
 import ProfileIcon from "../assets/icons/ProfileIcon.vue";
-import LoginIcon from "../assets/icons/LoginIcon.vue";
 import Add from "../assets/icons/Add.vue";
-import Search from "../assets/icons/Search.vue";
-import LibraryIcon from "../assets/icons/LibraryIcon.vue";
-import Settings from "../assets/icons/Settings.vue";
 
 const admin = ref(false);
 const logged = ref("");
@@ -72,103 +56,14 @@ onMounted(async () => {
   }
 });
 
-
 watch(logged, (newVal) => {
   logged.value = newVal;
 });
 </script>
 
 <style scoped>
-
-h2{
-    color: white;
+svg {
+  width: 1.7em;
+  height: 1.7em;
 }
-
-.navbar {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background-color: var(--background-color);
-  position: fixed;
-  bottom: 0;
-  z-index: 10000;
-  height: 40px;
-}
-
-.navbar-text{
-  text-decoration: none;
-  color: white;
-  font-size: 1em;
-  display: none;
-}
-
-.navbar-nav {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
-  height: 100%;
-}
-
-
-svg{
-    width: 1.7em;
-    height: 1.7em;
-}
-
-.logo{
-  display: none;
-}
-
-
-
-@media screen and (min-width: 768px) {
-  .logo{
-    display: block;
-    width: 50px;
-    height: 50px;
-  }
-
-  .logo-div{
-    width: 20%;
-    position: absolute;
-    left: 20px;
-
-  }
-
-  .navbar {
-    top: 0;
-    height: 80px;
-    align-items: center;
-    padding: 0 20px;
-  }
-
-  .navbar-nav {
-    justify-content: space-between;
-    width: 20%;
-    margin: auto;
-    gap: 1em;
-  }
-
-  .navbar-text{
-    display: block;
-  }
-
-  .link{
-    text-decoration: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-
-
-}
-
-
 </style>

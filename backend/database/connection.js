@@ -6,7 +6,7 @@ dotenv.config();
 
 let databaseName = process.env.DATABASE_NAME;
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
   databaseName = process.env.TEST_DATABASE_NAME; // Usa la base de datos de pruebas si está en modo test
 }
 

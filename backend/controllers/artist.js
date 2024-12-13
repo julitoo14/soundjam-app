@@ -242,6 +242,29 @@ const upload = async (req, res) => {
   }
 };
 
+const search = async (req, res) => {
+  const searchString = req.params.term;
+  try{
+    const artists = await Artist.find({title: {$regex: searchString, $options: 'i'}}).exec();
+    if(!artists){
+      return res.status(404).send({
+        status: 'error',
+        message: 'No se han encontrado artistas'
+      })
+    }
+
+    return res.status(200).send({
+      status: 'success',
+      artists
+    })
+  }catch(err){
+    return res.status(500).send({
+      status: 'error',
+      message: err.message
+    })
+  }
+}
+
 module.exports = {
   prueba,
   save,
@@ -251,4 +274,5 @@ module.exports = {
   remove,
   upload,
   image,
+  search
 };

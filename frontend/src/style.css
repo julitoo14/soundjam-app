@@ -18,14 +18,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
-:root{
-  --primary-color : #a600ff;
-  --darker-background-color: #000000;
-  --darker-background-color-hover: rgba(2, 1, 1, 0.82);
-  --background-color: #13131EFF;
-  --background-color-hover: rgba(19, 19, 30, 0.82);
-  --muted-text-color: rgba(120, 117, 117, 0.71);
-  --text-color: rgba(255, 255, 255, 0.87);
-  --error-color: #ff0033;
-
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Evita que se produzca scroll en el body */
 }

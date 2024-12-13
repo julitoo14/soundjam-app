@@ -563,6 +563,27 @@ const ArtistSchema = Schema({
 **Respuesta de ejemplo:**
 La imagen se devuelve como contenido binario o un error si no existe.
 
+### 9. **Buscar artistas**
+**Descripción:** Buscar artistas por un término.
+- **Método:** `GET`
+- **URL:** `/api/artist/search/:term`
+- **Autenticación:** Sí
+
+**Respuesta de ejemplo:**
+```json
+{
+    "status": "success",
+    "artists": [
+        {
+            "_id": "<ID del artista>",
+            "name": "<Título>",
+            "description": "<Descripción>",
+            "image": "default.png"
+        }
+    ]
+}
+```
+
 
 # Documentación del modelo y rutas: Playlist
 

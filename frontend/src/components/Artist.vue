@@ -1,6 +1,6 @@
 <template>
     <RouterLink class="nav-link" :to="`/artist/${props.artist._id}`">
-      <div class="artist-card">
+      <div class="flex flex-col items-center text-center gap-y-2">
         <img :src="props.artistImage" alt="Album Cover" />
           <div class="name" >{{artist.name}}</div>
       </div>

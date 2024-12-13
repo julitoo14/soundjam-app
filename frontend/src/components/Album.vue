@@ -1,6 +1,6 @@
 <template>
   <RouterLink class="nav-link" :to="`/album/${props.album._id}`">
-    <div class="album-card">
+    <div class="flex flex-col items-center text-center gap-y-2">
       <img :src="props.albumImage" alt="Album Cover" />
         <div class="name" >{{album.title}}</div>
     </div>
