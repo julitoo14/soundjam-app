@@ -245,7 +245,7 @@ const upload = async (req, res) => {
 const search = async (req, res) => {
   const searchString = req.params.term;
   try{
-    const artists = await Artist.find({title: {$regex: searchString, $options: 'i'}}).exec();
+    const artists = await Artist.find({name: {$regex: searchString, $options: 'i'}}).exec();
     if(!artists){
       return res.status(404).send({
         status: 'error',

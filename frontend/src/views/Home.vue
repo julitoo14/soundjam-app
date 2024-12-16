@@ -10,12 +10,11 @@
         <Search />
       </button>
       <div class="relative" v-if="showSearchBar">
-        <input
-          ref="searchInput"
+        <input ref="searchInput"
           class="z-0 w-full bg-gray-700 text-white placeholder-gray-400 p-4 pr-12 rounded focus:outline-none focus:ring focus:ring-purple-600"
           v-model="searchTerm" @input="search" type="text"
           placeholder="Search for your songs, artists, albums, playlists" />
-        <button @click="showSearchBar = !showSearchBar ; searchTerm = ''"
+        <button @click="showSearchBar = !showSearchBar; searchTerm = ''"
           class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full h-8 w-8 flex items-center justify-center">
           X
         </button>
@@ -25,7 +24,7 @@
 
     <div v-if="searchTerm && !loading" class="w-full px-4 py-2">
       <ul ref="list" class="space-y-4">
-        <li class="flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults" :key="song._id">
+        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults" :key="song._id">
           <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${song.album}`">
             <p class="text-sm">Song</p>
             <p class="text-sm font-semibold">{{ song.name }}</p>
@@ -33,7 +32,8 @@
           </RouterLink>
         </li>
 
-        <li class="flex items-center bg-gray-800 p-4 rounded-lg"  v-for="artist in searchArtistResults" :key="artist._id">
+        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="artist in searchArtistResults"
+          :key="artist._id">
           <RouterLink class="flex justify-between items-center w-full text-white" :to="`/artist/${artist._id}`">
             <p class="text-sm">Artist</p>
             <p class="text-sm font-semibold">{{ artist.name }}</p>
@@ -42,7 +42,7 @@
           </RouterLink>
         </li>
 
-        <li class="flex items-center bg-gray-800 p-4 rounded-lg" v-for="album in searchAlbumsResults" :key="album._id">
+        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="album in searchAlbumsResults" :key="album._id">
           <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${album._id}`">
             <p class="text-sm">Album</p>
             <p class="text-sm font-semibold">{{ album.title }}</p>
@@ -51,26 +51,34 @@
           </RouterLink>
         </li>
 
-        <li v-if="searchSongsResults.length === 0 && searchAlbumsResults.length === 0 && searchArtistResults.length === 0"
+        <li
+          v-if="searchSongsResults.length === 0 && searchAlbumsResults.length === 0 && searchArtistResults.length === 0 && !loading"
           class="text-white text-center">No results found</li>
       </ul>
     </div>
     <div v-else-if="loading" class="flex justify-center items-center h-96">
-      <div class="loader"></div>
+      <div class="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
-    
 
-    <div v-else class="p-4">
-      <h2 class="text-purple-600 text-4xl font-bold py-2">Albums</h2>
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Album class="bg-gray-800 p-2 rounded-lg hover:scale-105 transition" v-for="album in showedAlbums" :key="album._id" :album="album"
-          :albumImage="`${API_BASE_URL}/album/image/${album.image}`" />
+
+    <div v-else-if="!loading" class="p-4">
+      <h2 class="text-white text-4xl font-bold py-2">Albums</h2>
+      <div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Album class="bg-gray-900 p-2 rounded-lg hover:scale-105 transition" v-for="album in showedAlbums"
+            :key="album._id" :album="album" :albumImage="`${API_BASE_URL}/album/image/${album.image}`" />
+        </div>
+        <h2 class="text-white text-4xl font-bold py-2">Artists</h2>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Artist class="bg-gray-900 p-2 rounded-lg hover:scale-105 transition" v-for="artist in showedArtists"
+            :key="artist._id" :artist="artist" :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
+        </div>
       </div>
-      <h2 class="text-purple-600 text-4xl font-bold py-2">Artists</h2>
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Artist class="bg-gray-800 p-2 rounded-lg hover:scale-105 transition" v-for="artist in showedArtists" :key="artist._id" :artist="artist"
-          :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
-      </div>
+
     </div>
   </div>
 </template>
@@ -112,6 +120,14 @@ const searchInput = ref(null);
 const showedAlbums = ref([]);
 const showedArtists = ref([]);
 
+const delay = (func, delay) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+};
+
 
 const handleKeyDown = (event) => {
   if (event.key === "Escape" && showSearchBar.value) {
@@ -121,7 +137,7 @@ const handleKeyDown = (event) => {
   } else if (!showSearchBar.value && event.key.length === 1 && !event.metaKey) {
     // Abrir la barra al presionar cualquier tecla alfabética
     showSearchBar.value = true;
-    
+
     nextTick(() => {
       searchInput.value?.focus();
     });
@@ -135,11 +151,13 @@ const updateIsMobile = () => {
 };
 
 onMounted(() => {
+  loading.value = true;
   window.addEventListener("resize", updateIsMobile);
   window.addEventListener("keydown", handleKeyDown);
   fetchPlaylists();
   fetchArtists();
   fetchAlbums();
+  loading.value = false;
 });
 
 onBeforeUnmount(() => {
@@ -156,11 +174,20 @@ const fetchPlaylists = async () => {
   }
 };
 
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 const fetchArtists = async () => {
   try {
     const res = await getArtists();
     state.artists = res.artists;
-    showedArtists.value = res.artists.filter((artist, index) => index < 5);
+    const shuffledArtists = shuffleArray([...res.artists]); // Mezclar los artistas
+    showedArtists.value = shuffledArtists.slice(0, 5); // Tomar los primeros 5
   } catch (err) {
     console.log(err.message);
   }
@@ -170,13 +197,16 @@ const fetchAlbums = async () => {
   try {
     const res = await getRandomAlbums();
     albums.value = res.albums;
-    showedAlbums.value = res.albums.filter((album, index) => index < 5);
+    const shuffledAlbums = shuffleArray([...res.albums]); // Mezclar los álbumes
+    showedAlbums.value = shuffledAlbums.slice(0, 5); // Tomar los primeros 5
   } catch (err) {
     console.log(err.message);
   }
 };
 
-const search = async () => {
+
+
+const search = delay(async () => {
   loading.value = true;
   if (searchTerm.value.length > 0) {
     const resSongs = await getSongsBySearch(searchTerm.value);
@@ -185,26 +215,67 @@ const search = async () => {
     searchSongsResults.value = resSongs.songs;
     searchAlbumsResults.value = resAlbums.albums;
     searchArtistResults.value = resArtists.artists;
+    console.log(searchArtistResults.value);
   } else {
     fetchArtists();
     fetchPlaylists();
     fetchAlbums();
   }
-  loading.value=false;
-};
+  loading.value = false;
+}, 500); // El delay aquí es de 500ms
+
 </script>
 
 <style scoped>
-.text-primary {
-  color: var(--primary-color);
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
 }
 
-.loader{
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid #3498db;
+.loader div {
+  width: 15px;
+  height: 15px;
+  margin: 3px;
+  background-color: #3498db;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 2s linear infinite;
+  animation: bounce 1.5s infinite ease-in-out;
+}
+
+.loader div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loader div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.result-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@keyframes bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1);
+  }
 }
 </style>

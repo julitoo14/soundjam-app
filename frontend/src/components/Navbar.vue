@@ -5,21 +5,21 @@
     </div>
     <ul class="flex items-center gap-x-12 justify-center w-full md:w-auto md:gap-6">
       <li>
-        <RouterLink to="/" class="flex items-center gap-2 text-white hover:text-gray-300">
+        <RouterLink to="/" class="flex items-center gap-2 text-white ">
           <HomeIcon />
-          <span class="hidden md:inline text-sm">Home</span>
+          <span class="hidden hover:text-purple-600 md:inline text-sm">Home</span>
         </RouterLink>
       </li>
       <li v-if="admin">
         <RouterLink to="/createArtist" class="flex items-center gap-2 text-white hover:text-gray-300">
           <Add />
-          <span class="hidden md:inline text-sm">Create Artist</span>
+          <span class="hidden hover:text-purple-600 md:inline text-sm">Create Artist</span>
         </RouterLink>
       </li>
       <li>
         <RouterLink :to="`/profile/${id}`" class="flex items-center gap-2 text-white hover:text-gray-300">
           <ProfileIcon />
-          <span class="hidden md:inline text-sm">Profile</span>
+          <span class="hidden hover:text-purple-600 md:inline text-sm">Profile</span>
         </RouterLink>
       </li>
     </ul>

@@ -1,48 +1,49 @@
 <template>
-  <div class="albumView">
-    <div class="container-fluid">
-      <div class="info p-3">
-        <img :src="albumImage" alt="Album Cover" class="album-cover" />
-        <div class="album-info">
-          <h1>{{ album.title }}</h1>
-          <h2>{{ artist.name }}</h2>
-          <p>{{ album.description }}</p>
-          <p>Year: {{ album.year }}</p>
-          <div v-if="admin" class="buttons">
-            <RouterLink class="nav-link" :to="`/addSong/${albumId}`"
-              ><AddIcon />
+  <div class=" bg-gray-950 py-8">
+    <div class="container mx-auto">
+      <div class="info p-6 flex flex-col md:flex-row gap-8 text-white">
+        <img :src="albumImage" alt="Album Cover" class="w-72 h-72 object-cover rounded" />
+        <div class="album-info space-y-4">
+          <h1 class="text-4xl font-bold">{{ album.title }}</h1>
+          <h2 class="text-2xl font-medium">{{ artist.name }}</h2>
+          <p class="text-sm">{{ album.description }}</p>
+          <p class="text-sm">Year: {{ album.year }}</p>
+          <div v-if="admin" class="buttons flex space-x-4">
+            <RouterLink class="text-purple-500 hover:text-purple-700" :to="`/addSong/${albumId}`">
+              <AddIcon class="w-8 h-8" />
             </RouterLink>
 
-            <RouterLink class="nav-link" :to="`/editAlbum/${albumId}`"
-              ><Pencil
-            /></RouterLink>
+            <RouterLink class="text-purple-500 hover:text-purple-700" :to="`/editAlbum/${albumId}`">
+              <Pencil class="w-8 h-8" />
+            </RouterLink>
 
-            <Delete class="button" @click="removeAlbum"></Delete>
+            <Delete class="w-8 h-8 cursor-pointer text-purple-500 hover:text-purple-700" @click="removeAlbum" />
           </div>
         </div>
       </div>
     </div>
 
-    <table v-if="showTable" class="table table-hover">
-      <thead>
+    <table v-if="showTable" class="w-full mt-6 text-white">
+      <thead class="bg-gray-800">
         <tr>
-          <th scope="col">#</th>
-          <th class="text-left" scope="col">Name</th>
-          <th v-if="!isMobile" class="text-left" scope="col">Duration</th>
-          <th scope="col">Actions</th>
+          <th scope="col" class="px-4 py-2 text-left">#</th>
+          <th class="px-4 py-2 text-left">Name</th>
+          <th v-if="!isMobile" class="px-4 py-2 text-left">Duration</th>
+          <th class="px-4 py-2 text-center">Actions</th>
         </tr>
       </thead>
-      <Song
-        @playSong="$emit('playSong', song._id, songs)"
-        @removeSong="removeSong(song._id)"
-        @addSong="showAdd()"
-        v-for="song in songs"
-        :key="song._id"
-        :song="song"
-        :track="true"
-        :isMobile="isMobile"
-        class="song-row"
-      />
+        <Song
+          @playSong="$emit('playSong', song._id, songs)"
+          @removeSong="removeSong(song._id)"
+          @addSong="showAdd()"
+          v-for="song in songs"
+          :key="song._id"
+          :song="song"
+          :track="true"
+          :isMobile="isMobile"
+          class=" bg-gray-700 hover:bg-gray-600"
+        />
+
     </table>
 
     <AddSongToPlaylist
@@ -103,10 +104,8 @@ const fetchAlbum = async () => {
 
 const fetchSongs = async () => {
   try {
-    //get album songs
     const res = await getSongsByAlbum(albumId);
     songs.value = res.songs;
-    //get songs files
     getFilesFromSongs();
     if (songs.value.length > 0) {
       showTable.value = true;
@@ -120,9 +119,7 @@ const getFilesFromSongs = async () => {
   const promises = songs.value.map(async (song) => {
     const res = await getSong(song._id);
     song = res.song;
-    song.file = `${API_BASE_URL}/song/file/${
-      song.file
-    }?token=${localStorage.getItem("token")}`;
+    song.file = `${API_BASE_URL}/song/file/${song.file}?token=${localStorage.getItem("token")}`;
     return song;
   });
   songs.value = await Promise.all(promises);
@@ -162,85 +159,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.albumView{
-  background-color: var(--darker-background-color);
-  padding-bottom: 6em;
-}
-
-.text-left {
-  text-align: left;
-}
-
-th {
-  background-color: var(--background-color);
-  color: white;
-  text-align: center;
-  font-size: 1.2em;
-  border: none;
-}
-.info {
-  color: white;
-  background-color: rgba(0, 0, 0, 0.599);
-  display: flex;
-  flex-direction: row;
-  gap: 2em;
-}
-.album-cover {
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
-}
-
-.albumView {
-  height: 100vh;
-  overflow-y: scroll;
-}
-
-.button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.buttons {
-  gap: 1em;
-  display: flex;
-  flex-direction: row;
-}
-
-.buttons svg {
-  width: 2em;
-  height: 2em;
-}
-
-.table {
-  overflow-y: scroll;
-}
 
 .song-row {
   background-color: rgba(0, 0, 0, 0.795);
-}
-
-
-
-@media (max-width: 768px) {
-  .albumView {
-     /* Ajusta este valor según el tamaño de tu navbar */
-    margin-bottom: 1em;
-  }
-
-  .album-cover {
-    width: 100%;
-  }
-
-  .info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .table{
-    width: 100%;
-    margin-bottom: 7em;
-  }
 }
 </style>

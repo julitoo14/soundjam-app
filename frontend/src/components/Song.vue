@@ -1,8 +1,8 @@
 <template>
   <tbody>
-  <tr class="song" @click="$emit('playSong')">
+  <tr class="bg-gray-950 hover:bg-purple-600" @click="$emit('playSong')">
     <th v-if="props.track">{{ song.track }}</th>
-    <td style="font-size: 1.5em; text-align:left">{{ song.name }}</td>
+    <td class="" style="font-size: 1.5em; text-align:left">{{ song.name }}</td>
     <td v-if="!isMobile" style="font-size: 1.1em; text-align:left">{{ song.duration }}</td>
     <td>
       <!-- Dropdown de los tres puntos -->
@@ -52,16 +52,12 @@
 </template>
 
 <style scoped>
-.song {
-  cursor: pointer;
-  border: rgba(30, 29, 29, 0.22) 1px solid;
-}
-
 td {
   background-color: var(--darker-background-color);
   color: white;
   text-align: center;
   border: none;
+  width: 100%;
 }
 
 th {
@@ -72,15 +68,9 @@ th {
   border: none;
 }
 
-tr:hover td,
-tr:hover th {
-  background-color: var(--darker-background-color-hover);
-}
 
-td,
-th {
-  padding: 10px;
-}
+
+
 
 .dropdown-toggle {
   background: transparent;
