@@ -1,5 +1,5 @@
 <template>
-  <div class=" bg-gray-950 py-8 animate-fadeIn">
+  <div class=" bg-gray-950 animate-fadeIn">
     <div class="container mx-auto">
       <div class="info p-6 flex flex-col md:flex-row gap-8 text-white">
         <img :src="albumImage" alt="Album Cover" class="w-72 h-72 object-cover rounded m-auto md:!m-0" />

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-950 p-6">
+  <div class="bg-gray-950 p-3">
 
     <div class="text-center relative">
       <h3 class="text-white text-lg">
@@ -65,7 +65,7 @@
     </div>
 
 
-    <div v-else-if="!loading" class="p-4">
+    <div v-else-if="!loading" class="px-4">
       <h2 class="text-white text-4xl font-bold py-2">Albums</h2>
       <div>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">

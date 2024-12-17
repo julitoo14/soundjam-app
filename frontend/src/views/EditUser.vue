@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-950 pt-2 pb-14 px-3 relative">
+  <div class="bg-gray-950 p-2 px-3 relative">
       <h1 class="text-center text-2xl text-white font-bold mb-2">Edit User</h1>
       <form @submit.prevent="submitForm" class="bg-gray-800 space-y-1 md:w-2/5 m-auto p-4 rounded-lg">
         <div v-for="field in fields" :key="field.id" class="space-y-1">
