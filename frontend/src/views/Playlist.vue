@@ -1,36 +1,48 @@
 <template>
-  <div class="container-fluid">
-
-    <h2></h2>
-
-    <table v-if="showTable" class="table table-hover">
-      <thead>
+  <div class="w-full md:w-4/5 mx-auto px-4 ">
+    <!-- Tabla -->
+    <table v-if="showTable" class="w-full table-auto text-left bg-black text-white rounded-lg overflow-hidden">
+      <thead class="bg-gray-800">
         <tr>
-          <th style="text-align: left" scope="col">Name</th>
-          <th style="text-align: left" scope="col">Duration</th>
-          <th scope="col">Actions</th>
+          <th class="py-2 px-2">Name</th>
+          <th class="py-2 px-2">Duration</th>
+          <th class="py-2 px-2">Actions</th>
         </tr>
       </thead>
-      <Song
-        @playSong="$emit('playSong', song._id, songs)"
-        @removeSong="removeSong(song._id)"
-        @addSong="showAdd()"
-        v-for="song in songs"
-        :key="song._id"
-        :song="song"
-        :track="false"
-        :playlistview="true"
-      />
+
+      <!-- Componente Song -->
+      <tbody>
+        <Song
+          @playSong="$emit('playSong', song._id, songs)"
+          @removeSong="removeSong(song._id)"
+          @addSong="showAdd()"
+          v-for="song in songs"
+          :key="song._id"
+          :song="song"
+          :track="false"
+          :playlistview="true"
+          class="hover:bg-gray-700"
+        />
+      </tbody>
     </table>
+
+    <!-- Mensaje si no hay canciones -->
+    <div v-else class="text-center text-gray-400 mt-4">
+      No songs available in this playlist.
+    </div>
   </div>
 </template>
 
 <style scoped>
-  .table{
-    width: 100%;
-    background-color: black;
-  }
+/* Personalización opcional */
+.table-auto th,
+.table-auto td {
+  text-align: left;
+}
 
+.table-auto th {
+  font-weight: bold;
+}
 </style>
 
 <script setup>
@@ -39,13 +51,12 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getSongsByPlaylist, getSong, removeSongFromPlaylist } from "../composables/apiServices";
 import { API_BASE_URL } from "../../config";
+
 const songs = ref([]);
 const playlistSongs = ref([]);
 const route = useRoute();
 const showTable = ref(true);
 const playlistId = route.params.id;
-
-
 
 const fetchSongs = async () => {
   songs.value = [];
@@ -62,7 +73,7 @@ const fetchSongs = async () => {
   }
 };
 
-const getSongsFiles = async  () => {
+const getSongsFiles = async () => {
   const promises = playlistSongs.value.map(async (song) => {
     const res = await getSong(song);
     song = res.song;
@@ -76,7 +87,7 @@ const getSongsFiles = async  () => {
 
 const removeSong = async (id) => {
   try {
-    const res = await removeSongFromPlaylist(id)
+    const res = await removeSongFromPlaylist(id);
     console.log(res.message);
     fetchSongs();
   } catch (error) {

@@ -3,7 +3,7 @@
       <Navbar class="fixed top-0 left-0 right-0 h-16 z-10" v-if="logged"></Navbar>
       <RouterView
         class="flex-1 mt-16 mb-16 overflow-auto"
-        @playSong="playSong"
+        v-on="route.path.includes('/album/') ? { playSong } : {}"
       ></RouterView>
       <Mp3Player
         v-if="logged"
@@ -23,6 +23,7 @@ import { isPlaying } from "./composables/useAudioPlayer.js";
 import Navbar from "./components/Navbar.vue";
 import Mp3Player from "./components/Mp3Player.vue";
 import { ref, onMounted} from "vue";
+import { useRoute } from "vue-router";
 const logged = ref(false);
 const file = ref("");
 const playlist = ref([]);
@@ -30,6 +31,7 @@ const currentIndex = ref(0);
 const songInfo = ref(null);
 
 const isMobile = ref(window.innerWidth <= 768);
+const route = useRoute();
 
 const updateIsMobile = () => {
   isMobile.value = window.innerWidth <= 768;

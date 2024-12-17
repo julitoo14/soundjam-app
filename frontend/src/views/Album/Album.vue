@@ -1,8 +1,8 @@
 <template>
-  <div class=" bg-gray-950 py-8">
+  <div class=" bg-gray-950 py-8 animate-fadeIn">
     <div class="container mx-auto">
       <div class="info p-6 flex flex-col md:flex-row gap-8 text-white">
-        <img :src="albumImage" alt="Album Cover" class="w-72 h-72 object-cover rounded" />
+        <img :src="albumImage" alt="Album Cover" class="w-72 h-72 object-cover rounded m-auto md:!m-0" />
         <div class="album-info space-y-4">
           <h1 class="text-4xl font-bold">{{ album.title }}</h1>
           <h2 class="text-2xl font-medium">{{ artist.name }}</h2>
@@ -23,15 +23,16 @@
       </div>
     </div>
 
-    <table v-if="showTable" class="w-full mt-6 text-white">
+    <table v-if="showTable" class="w-full md:w-4/5 mt-6 md:m-auto text-white">
       <thead class="bg-gray-800">
-        <tr>
-          <th scope="col" class="px-4 py-2 text-left">#</th>
-          <th class="px-4 py-2 text-left">Name</th>
-          <th v-if="!isMobile" class="px-4 py-2 text-left">Duration</th>
-          <th class="px-4 py-2 text-center">Actions</th>
+        <tr class="">
+          <th scope="col" class="py-2 px-2 text-center">#</th>
+          <th class="py-2 px-2">Name</th>
+          <th v-if="!isMobile" class="py-2 px-2">Duration</th>
+          <th class="py-2 px-2 text-left">Actions</th>
         </tr>
       </thead>
+      <tbody >
         <Song
           @playSong="$emit('playSong', song._id, songs)"
           @removeSong="removeSong(song._id)"
@@ -43,7 +44,7 @@
           :isMobile="isMobile"
           class=" bg-gray-700 hover:bg-gray-600"
         />
-
+      </tbody>
     </table>
 
     <AddSongToPlaylist

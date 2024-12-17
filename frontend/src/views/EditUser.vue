@@ -1,83 +1,52 @@
 <template>
-    <div class="container">
-      <h1 class="mt-5 text-center">Edit User</h1>
-      <form class="mt-5" @submit.prevent="submitForm">
-        <div class="form-group" v-for="field in fields" :key="field.id">
-          <label :for="field.id">{{ field.label }}</label>
+  <div class="bg-gray-950 pt-2 pb-14 px-3 relative">
+      <h1 class="text-center text-2xl text-white font-bold mb-2">Edit User</h1>
+      <form @submit.prevent="submitForm" class="bg-gray-800 space-y-1 md:w-2/5 m-auto p-4 rounded-lg">
+        <div v-for="field in fields" :key="field.id" class="space-y-1">
+          <label :for="field.id" class="block text-white text-sm font-semibold">{{ field.label }}</label>
           <input
             :type="field.type"
-            class="form-control"
             :id="field.id"
             v-model="field.model.value"
             :required="field.required"
+            class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600"
           />
         </div>
-        <div>
-          <label for="file0" class="form-label">Image: </label>
+
+        <div class="">
+          <label for="file0" class="block text-white text-sm font-semibold">Image:</label>
           <input
+            id="file0"
             name="file0"
             type="file"
-            class="form-control"
             @change="handleFileUpload"
+            class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600"
           />
+        </div>
+
+        <div class="flex justify-start space-x-4 mt-4">
           <button
             type="submit"
-            class="m-3 btn btn-primary"
+            class="bg-purple-600 hover:bg-purple-700 text-white font-semibold  p-2 rounded-md transition"
           >
             Save
           </button>
-          <button class="m-3 btn btn-primary">
-            <RouterLink class="nav-link" :to="`/profile/${route.params.id}`"
-              >Back</RouterLink
-            >
-          </button>
+
+          <RouterLink
+            :to="`/profile/${route.params.id}`"
+            class="bg-gray-700 hover:bg-gray-600 text-white font-semibold p-2 rounded-md transition"
+          >
+            Back
+          </RouterLink>
         </div>
       </form>
     </div>
-  </template>
+</template>
 
-  <style scoped>
-.container {
-  max-width: 600px;
-  margin: auto;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-control {
-  width: 100%;
-  padding: .375rem .75rem;
-  margin-bottom: .5rem;
-  border: 1px solid #ced4da;
-  border-radius: .25rem;
-}
-
-.btn {
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
-  display: inline-block;
-  font-weight: 400;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-  padding: .375rem .75rem;
-  line-height: 1.5;
-  border-radius: .25rem;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #004085;
-}
-</style>
-
-  <script setup>
-import { ref, onMounted, reactive } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { uploadUserImage, updateUser,  getUserProfile } from "../composables/apiServices";
+import { uploadUserImage, updateUser, getUserProfile } from "../composables/apiServices";
 
 const user = ref("");
 const file0 = ref();
@@ -89,7 +58,6 @@ const nick = ref("");
 const email = ref("");
 const password = ref("");
 const userId = route.params.id;
-
 
 const fields = [
   { id: "name", label: "Name:", model: name, type: "text", required: true },
@@ -118,13 +86,13 @@ const handleFileUpload = (event) => {
 };
 
 const uploadImage = async () => {
-    if (file0.value) {
+  if (file0.value) {
     try {
       let formData = new FormData();
       formData.append("file0", file0.value);
       await uploadUserImage(formData);
 
-      console.log("Image uploaded succesfully", "info");
+      console.log("Image uploaded successfully", "info");
     } catch (err) {
       console.log(err);
     }
@@ -132,7 +100,7 @@ const uploadImage = async () => {
 };
 
 const submitForm = async () => {
-    await uploadImage();
+  await uploadImage();
 
   const userToUpdate = {
     name: name.value,
@@ -142,11 +110,11 @@ const submitForm = async () => {
     password: password.value,
   };
 
-  try{
-      const response = await updateUser(userToUpdate);
-      router.push(`/profile/${userId}`);
-  }catch(err){
-      console.log(err.message);
+  try {
+    const response = await updateUser(userToUpdate);
+    router.push(`/profile/${userId}`);
+  } catch (err) {
+    console.log(err.message);
   }
 };
 </script>

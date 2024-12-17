@@ -1,48 +1,75 @@
 <template>
-  <div class="page">
-    
-    <div class="artist-container" >
-        <div class="artist-info">
-          <img class="artist-image " :src="image">
-          <div>
-            <h1 class="name">{{ artist.name }}</h1>
-            <p class="description">{{ artist.description }}</p>
-          
-          <div v-if="admin">
-              <button class="btn-success btn">
-                <RouterLink class="nav-link" :to="`/createAlbum/${artist._id}`"
-                >Create Album</RouterLink
-                >
-              </button>
-              <button class="btn-primary btn">
-                <RouterLink class="nav-link" :to="`/editArtist/${artist._id}`"
-                >Edit Artist</RouterLink
-                >
-              </button>
-              <button class="btn-danger btn" @click="showDeleteModal = true">
-                Remove Artist
-              </button>
+  <div class=" bg-gray-950 py-6 text-white animate-fadeIn">
+    <!-- Artist Info Section -->
+    <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-center md:justify-start items-center gap-6">
+        <img
+          :src="image"
+          alt="Artist Image"
+          class="w-64 h-64 object-cover rounded-lg shadow-lg"
+        />
+        <div class="text-center md:text-left">
+          <h1 class="text-4xl md:text-5xl font-bold text-purple-600 mb-2">
+            {{ artist.name }}
+          </h1>
+          <p class="text-gray-300 text-lg leading-relaxed">
+            {{ artist.description }}
+          </p>
+          <!-- Admin Controls -->
+          <div v-if="admin" class="flex flex-wrap gap-2 mt-4">
+            <RouterLink
+              :to="`/createAlbum/${artist._id}`"
+              class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
+            >
+              Create Album
+            </RouterLink>
+            <RouterLink
+              :to="`/editArtist/${artist._id}`"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
+            >
+              Edit Artist
+            </RouterLink>
+            <button
+              @click="showDeleteModal = true"
+              class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
+            >
+              Remove Artist
+            </button>
           </div>
         </div>
       </div>
-      <div class="albums">
-        <Album
-        class="album"
-        v-for="album in albums"
-        :key="album._id"
-        :album="album"
-        :albumImage="`${API_BASE_URL}/album/image/${album.image}`"
-        />
+    </div>
+
+    <!-- Albums Section -->
+    <div class="max-w-5xl mx-auto mt-12 px-4 md:px-6 lg:px-8">
+      <div class=" rounded-lg shadow-lg p-6 md:p-8">
+        <h2 class="text-3xl font-bold text-purple-600 mb-6 text-center md:text-left">
+          Albums
+        </h2>
+        <div v-if="albums.length" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <Album
+            v-for="album in albums"
+            :key="album._id"
+            :album="album"
+            :albumImage="`${API_BASE_URL}/album/image/${album.image}`"
+            class="bg-gray-900 hover:bg-gray-600 rounded-lg shadow-md transition duration-300 p-4"
+          />
+        </div>
+        <div v-else class="text-center text-gray-300 text-lg mt-6">
+          No albums found
+        </div>
       </div>
     </div>
+
+    <!-- Delete Modal -->
+    <DeleteModal
+      v-if="showDeleteModal"
+      @close="showDeleteModal = false"
+      :show="showDeleteModal"
+      @delete="removeArtist(artistId), (showDeleteModal = false)"
+    />
   </div>
-  <DeleteModal
-  v-if="showDeleteModal"
-  @close="showDeleteModal = false"
-  :show="showDeleteModal"
-  @delete="removeArtist(artistId), showDeleteModal = false"
-  ></DeleteModal>
-  </template>
+</template>
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -61,10 +88,9 @@ const image = ref("");
 const albums = ref([]);
 const showDeleteModal = ref(false);
 
-
 const removeArtist = async () => {
   try {
-    const res = await deleteArtist(artist.value._id)
+    await deleteArtist(artist.value._id);
     router.push("/artists");
   } catch (error) {
     console.log(error.response.data.message);
@@ -73,7 +99,6 @@ const removeArtist = async () => {
 
 const getArtistData = async () => {
   try {
-    
     const res = await getArtist(artistId);
     artist.value = res.artist;
     image.value = `${API_BASE_URL}/artist/image/${artist.value.image}`;
@@ -83,10 +108,10 @@ const getArtistData = async () => {
 };
 
 const getAlbums = async () => {
-  try{
+  try {
     const res = await getAlbumsByArtist(artistId);
     albums.value = res.albums;
-  }catch(error){
+  } catch (error) {
     console.log(error.response.data.message);
   }
 };
@@ -97,151 +122,26 @@ onMounted(() => {
   const token = localStorage.getItem("token");
   const decoded = JSON.parse(atob(token.split(".")[1]));
   const role = decoded.role;
-  if (role == "role_admin") {
+  if (role === "role_admin") {
     admin.value = true;
   }
 });
-
-
 </script>
 
-
 <style scoped>
-
-.mobile-name{
-  display: none;
-}
-
-.page{
-  min-height: 100vh;
-  background-color: var(--darker-background-color);
-  padding-top: 7em;
-  overflow-y: auto;
-  padding-bottom: 7em;
-}
-
-.artist-container {
-  background-color: var(--background-color);
-  width: 60%;
-  border-radius: 10px;
-  text-align:justify;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 20px;
-  margin: auto;
-  gap: 2em;
-}
-
-.artist-image {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-right: 20px;
-  margin: auto;
-}
-
-.artist-info{
-  display: flex;
-  gap: 20px;
-}
-
-.name-img{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20px;  
-}
-
-.albums{
-  display: flex;
-  flex-direction: row;
-  padding: 1em;
-  width: 100%;
-}
-
-.album{
-  background-color: rgba(0, 0, 0, 0.729);
-}
-
-.album:hover{
-  background-color: rgb(46, 45, 45);
-}
-
-
-h1 {
-  font-size: 4rem;
-  margin-bottom: 10px;
-}
-
-h2 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-.description {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-}
-
-
-
-@media (max-width: 768px) {
-
-
-  .artist-info{
-    flex-direction: column;
-    align-items: center;
+/* Animación suave para el modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-
-  .description{
-    font-size: 1rem;
-    overflow: scroll;
-    max-height: 8em;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
+}
 
-  .page{
-    padding-top: 0;
-    background-color: var(--background-color);
-  }
-
-  .artist-container {
-    padding: 10px;
-    margin-bottom: 5em;
-    width: 100%;
-  }
-
-  .name-img {
-    gap: 0.3em;
-    margin: auto;
-  }
-
-  .artist-image {
-    width: 200px;
-    height: 200px;
-  }
-
-
-  .albums{
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    width: 20em;
-  }
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1rem;
-  }
-
-  p {
-    font-size: 1rem;
-  }
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
 }
 </style>

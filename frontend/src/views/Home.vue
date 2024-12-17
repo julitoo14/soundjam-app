@@ -69,12 +69,12 @@
       <h2 class="text-white text-4xl font-bold py-2">Albums</h2>
       <div>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Album class="bg-gray-900 p-2 rounded-lg hover:scale-105 transition" v-for="album in showedAlbums"
+          <Album class="bg-gray-900 p-2 rounded-lg animate-fadeIn hover:scale-105 transition" v-for="album in showedAlbums"
             :key="album._id" :album="album" :albumImage="`${API_BASE_URL}/album/image/${album.image}`" />
         </div>
         <h2 class="text-white text-4xl font-bold py-2">Artists</h2>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Artist class="bg-gray-900 p-2 rounded-lg hover:scale-105 transition" v-for="artist in showedArtists"
+          <Artist class="bg-gray-900 p-2 rounded-lg animate-fadeIn hover:scale-105  transition" v-for="artist in showedArtists"
             :key="artist._id" :artist="artist" :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
         </div>
       </div>

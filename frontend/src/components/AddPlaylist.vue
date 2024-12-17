@@ -1,71 +1,80 @@
 <template>
+  <!-- Modal Overlay -->
   <div
-    class="modal fade"
-    :class="{ show: show }"
-    tabindex="-1"
-    role="dialog"
-    aria-hidden="true"
+    v-if="show"
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50"
+    @click.self="close"
     ref="modal"
   >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Create A New Playlist</h5>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-            @click="close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
-              <label for="name" class="form-label">Playlist Name</label>
-              <input
-                type="text"
-                class="form-control"
-                id="name"
-                v-model="name"
-              />
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group">
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  data-dismiss="modal"
-                  @click="$emit('close')"
-                >
-                  Close
-                </button>
-                <button class="btn btn-success" @click="addPlaylist">Add Playlist</button>
-            </div>
-
-            <Alert
-                :show="alert.show"
-                :type="alert.type"
-                :message="alert.message"
-                @close="alert.show = false"
-            />
-        </div>
+    <!-- Modal Content -->
+    <div
+      class="bg-gray-800 text-white rounded-lg shadow-lg w-full max-w-md animate-fadeIn"
+    >
+      <!-- Header -->
+      <div class="flex justify-between items-center border-b border-gray-700 px-6 py-4">
+        <h5 class="text-lg font-semibold">Create A New Playlist</h5>
+        <button
+          @click="close"
+          class="text-gray-400 hover:text-white transition duration-200"
+          aria-label="Close"
+        >
+          &times;
+        </button>
       </div>
+
+      <!-- Body -->
+      <div class="px-6 py-4">
+        <form @submit.prevent="addPlaylist">
+          <div class="mb-4">
+            <label for="name" class="block text-gray-300 text-sm mb-2">Playlist Name</label>
+            <input
+              type="text"
+              id="name"
+              v-model="name"
+              class="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+              placeholder="Enter playlist name"
+            />
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex justify-end space-x-2 border-t border-gray-700 px-6 py-4">
+        <button
+          @click="close"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md text-white font-medium transition duration-200"
+        >
+          Close
+        </button>
+        <button
+          @click="addPlaylist"
+          class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-white font-medium transition duration-200"
+        >
+          Add Playlist
+        </button>
+      </div>
+
+      <!-- Alert -->
+      <Alert
+        v-if="alert.show"
+        :show="alert.show"
+        :type="alert.type"
+        :message="alert.message"
+        @close="alert.show = false"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, reactive } from "vue";
 import Alert from "./Alert.vue";
 import { savePlaylist } from "../composables/apiServices";
+
 const props = defineProps({
-  show: false,
+  show: { type: Boolean, default: false },
 });
+
 const emit = defineEmits(["close", "update"]);
 
 const modal = ref(null);
@@ -73,6 +82,7 @@ const name = ref("");
 const token = localStorage.getItem("token");
 const decoded = JSON.parse(atob(token.split(".")[1]));
 const Userid = decoded.id;
+
 const alert = reactive({
   type: "",
   message: "",
@@ -87,69 +97,35 @@ const showAlert = (type, message) => {
 
 const addPlaylist = async () => {
   try {
-    await savePlaylist(name.value, Userid)
+    await savePlaylist(name.value, Userid);
     showAlert("success", "Playlist Added Successfully");
     close();
     emit("update");
   } catch (err) {
     console.log(err.response.data.message);
+    showAlert("danger", "Failed to add playlist");
   }
 };
 
 const close = () => {
   emit("close");
 };
-
-onMounted(() => {
-  const modalElement = modal.value;
-  modalElement.addEventListener("click", (event) => {
-    if (event.target === modalElement) {
-      close();
-    }
-  });
-});
 </script>
 
 <style scoped>
-.modal {
-  display: block !important;
-  background-color: rgba(100, 98, 98, 0.5);
-  z-index: 9999;
+/* Animación para el modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.modal-dialog {
-  margin: 10% auto;
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
 }
-
-.modal-content {
-  background-color: #000000;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(53, 52, 52, 0.5);
-  border: white solid 3px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-.modal-header h5 {
-  margin: 0;
-}
-
-.modal-body {
-  padding: 10px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 10px;
-  border-top: 1px solid #ccc;
-}
-
 </style>

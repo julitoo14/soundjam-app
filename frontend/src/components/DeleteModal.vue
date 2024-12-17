@@ -1,117 +1,86 @@
 <template>
-    <div
-    class="modal fade"
-    :class="{ show: show }"
-    tabindex="-1"
-    role="dialog"
-    aria-hidden="true"
+  <!-- Modal Overlay -->
+  <div
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50"
+    v-if="show"
+    @click.self="close"
     ref="modal"
   >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Are you sure?</h4>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-            @click="close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-footer">
-          <div class="btn-group">
-              <button class="btn btn-success" @click="$emit('delete')">
-                Yes
-              </button>
-            <button
-              type="button"
-              class="btn btn-danger"
-              data-dismiss="modal"
-              @click="$emit('close')"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+    <!-- Modal Content -->
+    <div
+      class="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden max-w-sm w-full animate-fadeIn"
+    >
+      <!-- Header -->
+      <div class="flex justify-between items-center border-b border-gray-700 px-6 py-4">
+        <h4 class="text-lg font-semibold">Are you sure?</h4>
+        <button
+          @click="close"
+          class="text-gray-400 hover:text-white transition duration-200"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6">
+        <p class="text-gray-300">Do you really want to proceed with this action?</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex justify-end space-x-2 px-6 py-4 bg-gray-700">
+        <button
+          @click="$emit('delete')"
+          class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-white font-medium transition duration-200"
+        >
+          Yes
+        </button>
+        <button
+          @click="close"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-md text-white font-medium transition duration-200"
+        >
+          Close
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
+const props = defineProps({
+  show: { type: Boolean, default: false },
+});
+const emit = defineEmits(["close", "delete"]);
+const modal = ref(null);
 
-  const props = defineProps({
-    show: false,
+const close = () => {
+  emit("close");
+};
+
+onMounted(() => {
+  const modalElement = modal.value;
+  modalElement?.addEventListener("click", (event) => {
+    if (event.target === modalElement) close();
   });
-  const emit = defineEmits(["close", "update"]);
-  const modal = ref(null);
+});
+</script>
 
-  const close = () => {
-    emit("close");
-  };
-  
-  onMounted(() => {
-    const modalElement = modal.value;
-    modalElement.addEventListener("click", (event) => {
-      if (event.target === modalElement) {
-        close();
-      }
-    });
-  });
-  </script>
-  
-  <style scoped>
-  .modal {
-    display: block !important;
-    background-color: rgba(100, 98, 98, 0.5);
-    z-index: 9999;
+<style scoped>
+/* Animación para el modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-  
-  .modal-dialog {
-    margin: 10% auto;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  .modal-content {
-    background-color: #000000;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(53, 52, 52, 0.5);
-    border: white solid 3px;
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .modal-header h5 {
-    margin: 0;
-  }
-  
-  .modal-body {
-    padding: 10px;
-  }
-  
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-  }
+}
 
-  @media (max-width: 768px) {
-    .modal{
-      margin-top: 3em;
-    }
-  }
-  
-
-  </style>
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+</style>
