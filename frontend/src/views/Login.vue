@@ -143,5 +143,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* No additional styles needed as Tailwind CSS handles everything */
 </style>

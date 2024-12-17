@@ -1,7 +1,7 @@
 <template>
   <div
     v-bind="$attrs"
-    class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t-4 border-purple-600 flex items-center justify-between px-4 py-2 h-24"
+    class=" bg-gray-900 border-t-4 border-purple-600 flex items-center justify-between px-4 py-2 h-24"
   >
     <!-- Left Section -->
     <div v-if="getSongInfo()" class="flex items-center space-x-4 w-full max-w-sm">

@@ -1,13 +1,13 @@
 <template>
     <div id="app" class="flex flex-col h-screen bg-gray-950 text-white">
-      <Navbar class="fixed top-0 left-0 right-0 h-16 z-10" v-if="logged"></Navbar>
+      <Navbar class="flex-none  h-16 " v-if="logged"></Navbar>
       <RouterView
-        class="flex-1 mt-16 mb-16 overflow-auto"
+        class="flex-grow overflow-auto"
         v-on="route.path.includes('/album/') ? { playSong } : {}"
       ></RouterView>
       <Mp3Player
         v-if="logged"
-        class="fixed bottom-0 left-0 right-0 h-16 z-10"
+        class="flex-none h-16 "
         :song="songInfo"
         :files="file"
         @previous="playPreviousSong"
