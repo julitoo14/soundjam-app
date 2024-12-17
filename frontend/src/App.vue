@@ -3,7 +3,7 @@
       <Navbar class="flex-none  h-16 " v-if="logged"></Navbar>
       <RouterView
         class="flex-grow overflow-auto"
-        v-on="route.path.includes('/album/') ? { playSong } : {}"
+        v-on="route.path.includes('/album/') || route.path.includes('/playlist/') ? { playSong } : {}"
       ></RouterView>
       <Mp3Player
         v-if="logged"
