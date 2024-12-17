@@ -1,68 +1,83 @@
 <template>
-  <div class="page">
-    <form autocomplete="off" v-on:submit.prevent="onSubmit">
-      <img src="/logo.png" alt="logo" class="logo" />
-      <div class="register-text">
-        <h2 class="text-center">Create your account!</h2>
-        <span class="text-center">Or <RouterLink to="/login" class="link">login to your account </RouterLink></span>
+  <div class="min-h-screen m-0  bg-gray-900 flex items-center justify-center px-4">
+    <form
+      autocomplete="off"
+      @submit.prevent="register"
+      class="w-full max-w-md p-4 rounded-lg space-y-2 md:space-y-4"
+    >
+      <!-- Logo -->
+      <img src="/logo.png" alt="logo" class="w-24 mx-auto" />
+
+      <!-- Register Text -->
+      <div class="text-center text-white space-y-2">
+        <h2 class="text-2xl font-bold">Create your account!</h2>
+        <p class="text-gray-400">
+          Or
+          <RouterLink to="/login" class="text-purple-400 hover:underline">
+            login to your account
+          </RouterLink>
+        </p>
       </div>
-        <input
-          v-model="form.name"
-          required
-          type="name"
-          class="form-control"
-          id="name"
-          placeholder="Name"
-          autocomplete="off"
-        />
-        <input
-          v-model="form.surname"
-          required
-          type="surname"
-          class="form-control"
-          id="surname"
-          placeholder="Surname"
-        />
-        <input
-          v-model="form.nick"
-          required
-          type="text"
-          name="nick"
-          id="nick"
-          class="form-control"
-          placeholder="Nick"
-        />
-        <input
-          v-model="form.email"
-          required
-          type="email"
-          name="email"
-          id="email"
-          class="form-control"
-          placeholder="Email address"
-        />
-        <input
-          v-model="form.password"
-          required
-          type="password"
-          class="form-control"
-          id="password"
-          placeholder="Password"
-        />
-        <input
-          v-model="form.confirmPassword"
-          required
-          type="password"
-          class="form-control"
-          id="confirmPassword"
-          placeholder="Confirm Password"
-        />
+
+      <!-- Inputs -->
+      <input
+        v-model="form.name"
+        required
+        type="text"
+        id="name"
+        placeholder="Name"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <input
+        v-model="form.surname"
+        required
+        type="text"
+        id="surname"
+        placeholder="Surname"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <input
+        v-model="form.nick"
+        required
+        type="text"
+        id="nick"
+        placeholder="Nick"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <input
+        v-model="form.email"
+        required
+        type="email"
+        id="email"
+        placeholder="Email address"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <input
+        v-model="form.password"
+        required
+        type="password"
+        id="password"
+        placeholder="Password"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <input
+        v-model="form.confirmPassword"
+        required
+        type="password"
+        id="confirmPassword"
+        placeholder="Confirm Password"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+
+      <!-- Register Button -->
       <button
-        @click="register()"
-        class="register-btn"
+        type="submit"
+        class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300"
       >
         Register
       </button>
+
+      <!-- Alert -->
       <Alert
         :type="alert.type"
         :message="alert.message"
@@ -73,10 +88,15 @@
   </div>
 </template>
 
+---
+
+### **Script**
+
+```javascript
 <script setup>
-import {onMounted, reactive } from "vue";
-import Alert from "../components/Alert.vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import Alert from "../components/Alert.vue";
 import { saveUser } from "../composables/apiServices";
 
 const router = useRouter();
@@ -122,7 +142,6 @@ const register = async () => {
   try {
     const res = await saveUser(form);
     showAlert(res.message, "info");
-    console.log(res);
     setTimeout(() => {
       router.push("/login");
     }, 5000);
@@ -130,82 +149,4 @@ const register = async () => {
     showAlert(err, "danger");
   }
 };
-
-onMounted(() => {
-  if (localStorage.getItem("token")) {
-    router.push("/");
-  }
-});
 </script>
-
-
-<style scoped>
-form {
-  width: 40%;
-  padding: 2em;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
-}
-
-.form-control {
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
-.form-control::placeholder{
-  color: var(--muted-text-color);
-}
-
-.form-control:focus{
-  border-color: var(--primary-color);
-  outline: none;
-}
-
-.register-text{
-  display: flex;
-  flex-direction: column;
-}
-
-.page{
-  min-height: 100vh;
-  background: var(--background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.link{
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.logo{
-  width: 100px;
-  margin: auto;
-  display: block;
-}
-
-.register-btn{
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border: none;
-  padding: 0.5em;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-
-@media screen and (max-width: 1000px) {
-  form {
-    width: 70%;
-    margin: auto;
-  }
-
-  .page{
-    padding-top:5em;
-  }
-}
-
-
-</style>

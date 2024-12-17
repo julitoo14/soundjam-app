@@ -1,50 +1,74 @@
 <template>
-  <div class="page">
-    <form v-on:submit.prevent="onSubmit">
-      <img src="/logo.png" alt="logo" class="logo" />
-      <div class="login-text">
-        <h2 class="text-center">Sign in to your account!</h2>
-        <span class="text-center">Or <RouterLink to="/register" class="link">register for a new account </RouterLink></span>
+  <div class="min-h-screen m-0 bg-gray-900 flex items-center justify-center px-4">
+    <form
+      @submit.prevent="onSubmit"
+      class="w-full max-w-md  p-6 rounded-lg space-y-6"
+    >
+      <!-- Logo -->
+      <img src="/logo.png" alt="logo" class="w-24 mx-auto" />
+
+      <!-- Login Text -->
+      <div class="text-center text-white space-y-2">
+        <h2 class="text-2xl font-bold">Sign in to your account!</h2>
+        <p class="text-gray-400">
+          Or
+          <RouterLink to="/register" class="text-purple-400 hover:underline">
+            register for a new account
+          </RouterLink>
+        </p>
       </div>
 
-        <input
-          v-model="email"
-          type="email"
-          name="email"
-          id="email"
-          class="form-control"
-          placeholder="Email address"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          class="form-control "
-          id="password"
-        />
+      <!-- Inputs -->
+      <input
+        v-model="email"
+        type="email"
+        name="email"
+        id="email"
+        placeholder="Email address"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
+      <input
+        v-model="password"
+        type="password"
+        name="password"
+        id="password"
+        placeholder="Password"
+        class="w-full bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-purple-600"
+      />
 
-      <div class="remember-forgot">
-        <div>
-          <input type="checkbox" value="remember-me" id="remember-me" class="remember-input">
-          <label class="remember-text" for="remember-me">Remember me</label>
-        </div>
-        <RouterLink to="/forgot-password" class="link">Forgot your password?</RouterLink>
+      <!-- Remember me & Forgot Password -->
+      <div class="flex justify-between items-center text-sm text-gray-400">
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="remember-me"
+            class="text-purple-600 focus:ring-purple-500 rounded"
+          />
+          <span>Remember me</span>
+        </label>
+        <RouterLink
+          to="/forgot-password"
+          class="text-purple-400 hover:underline"
+        >
+          Forgot your password?
+        </RouterLink>
       </div>
 
-
+      <!-- Buttons -->
       <button
         @click="login()"
-        class="sign-btn"
+        class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300"
       >
         Sign in
       </button>
-    <button
-      @click="loginAsGuest()"
-      class="sign-btn"
-    >
-      Sign in as Guest
-    </button>
+      <button
+        @click="loginAsGuest()"
+        class="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition duration-300"
+      >
+        Sign in as Guest
+      </button>
 
+      <!-- Alert Component -->
       <Alert
         :type="alert.type"
         :message="alert.message"
@@ -56,12 +80,11 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import { ref } from "vue";
-import Alert from "../components/Alert.vue";
-import { reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import Alert from "../components/Alert.vue";
 import { loginUser } from "../composables/apiServices";
+
 const email = ref("");
 const password = ref("");
 const router = useRouter();
@@ -84,31 +107,30 @@ const setLocalStorage = () => {
   localStorage.setItem("nick", user.value.nick);
   localStorage.setItem("id", user.value._id);
   localStorage.setItem("image", user.value.image);
-}
+};
 
 const login = async () => {
-  try{
+  try {
     const res = await loginUser(email.value, password.value);
     showAlert(res.message, "info");
-    console.log(res)
     user.value = res.user;
     token.value = res.token;
     setLocalStorage();
-    router.go('/');
-  }catch(err){
+    router.go("/");
+  } catch (err) {
     showAlert(err.response.data.message);
-  }  
+  }
 };
 
 const loginAsGuest = async () => {
-  try{
-    const res = await loginUser('guest@gmail.com', '123456');
+  try {
+    const res = await loginUser("guest@gmail.com", "123456");
     showAlert(res.message, "info");
     user.value = res.user;
     token.value = res.token;
     setLocalStorage();
-    router.go('/');
-  }catch(err){
+    router.go("/");
+  } catch (err) {
     showAlert(err.response.data.message);
   }
 };
@@ -121,96 +143,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
-form {
-  width: 40%;
-  padding: 2em;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
-}
-
-.form-control{
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
-.form-control::placeholder{
-  color: var(--muted-text-color);
-}
-
-.form-control:focus{
-  border-color: var(--primary-color);
-  outline: none;
-}
-
-.login-text{
-  display: flex;
-  flex-direction: column;
-}
-
-.page{
-  height: 100vh;
-  background: var(--background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.link{
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.logo{
-  width: 100px;
-  margin: auto;
-  display: block;
-}
-
-.remember-forgot{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.remember-text{
-  margin-left: 0.5em;
-  color: var(--muted-text-color);
-}
-
-.remember-input {
-  background-color: var(--background-color);
-}
-
-.sign-btn{
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border: none;
-  padding: 0.5em;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-
-@media screen and (max-width: 1000px) {
-  form {
-    width: 70%;
-  }
-
-  .page{
-    align-items: flex-start;
-    justify-content: center;
-  }
-
-  .remember-forgot{
-    flex-direction: column;
-    gap: 1em;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-}
-
-
-
+/* No additional styles needed as Tailwind CSS handles everything */
 </style>
