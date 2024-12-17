@@ -1,7 +1,7 @@
 <template>
-  <div class=" bg-gray-950 py-6 text-white animate-fadeIn">
+  <div class=" bg-gray-950 mx-auto py-12 w-full md:w-4/5 text-white animate-fadeIn">
     <!-- Artist Info Section -->
-    <div class="max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+    <div class="w-full">
       <div class="flex flex-col md:flex-row justify-center md:justify-start items-center gap-6">
         <img
           :src="image"
@@ -41,12 +41,12 @@
     </div>
 
     <!-- Albums Section -->
-    <div class="max-w-5xl mx-auto mt-12 px-4 md:px-6 lg:px-8">
-      <div class=" rounded-lg shadow-lg p-6 md:p-8">
+    <div class="w-full mt-12 ">
+      <div class=" rounded-lg shadow-lg ">
         <h2 class="text-3xl font-bold text-purple-600 mb-6 text-center md:text-left">
           Albums
         </h2>
-        <div v-if="albums.length" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div v-if="albums.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <Album
             v-for="album in albums"
             :key="album._id"
