@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="flex flex-col h-screen bg-gray-950 text-white">
+    <div id="app" class="flex flex-col h-[100dvh] bg-gray-950 text-white">
       <Navbar class="flex-none  h-16 " v-if="logged"></Navbar>
       <RouterView
         class="flex-grow overflow-auto"
