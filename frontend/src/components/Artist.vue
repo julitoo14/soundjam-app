@@ -1,8 +1,12 @@
 <template>
     <RouterLink class="nav-link" :to="`/artist/${props.artist._id}`">
-      <div class="flex flex-col items-center text-center gap-y-2">
-        <img :src="props.artistImage" alt="Album Cover" />
-          <div class="name" >{{artist.name}}</div>
+      <div class="flex flex-col items-center text-center gap-2 rounded-lg">
+        <LazyImage
+        class="object-cover flex-shrink-0"
+        :src="props.artistImage"
+        alt="Album Cover"
+        />
+          <div class="text-white text-sm truncate w-32" >{{artist.name}}</div>
       </div>
     </RouterLink>
   </template>
@@ -10,6 +14,7 @@
   <script setup>
   import { ref } from "vue";
   import { RouterLink } from "vue-router";
+  import LazyImage from "./LazyImage.vue";
   
   const props = defineProps({
     artist: {

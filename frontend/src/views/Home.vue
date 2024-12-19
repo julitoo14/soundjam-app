@@ -1,17 +1,14 @@
 <template>
-  <div class="bg-gray-950 p-3">
+  <div class="bg-gray-950 p-1">
 
     <div class="text-center relative">
-      <h3 class="text-white text-lg">
-        Welcome {{ nick }} to <span class=" text-purple-600">SoundJam!</span>
-      </h3>
       <button v-if="!showSearchBar" @click="showSearchBar = !showSearchBar"
         class="absolute right-0 md:right-8 top-0 h-8 w-8 md:h-10 md:w-10">
         <Search />
       </button>
       <div class="relative" v-if="showSearchBar">
         <input ref="searchInput"
-          class="z-0 w-full bg-gray-700 text-white placeholder-gray-400 p-4 pr-12 rounded focus:outline-none focus:ring focus:ring-purple-600"
+          class="z-0 w-full bg-gray-700 text-white placeholder-gray-400 p-4 pr-12 rounded focus:outline-none focus:ring focus:ring-purple-600 animate-fadeIn transition"
           v-model="searchTerm" @input="search" type="text"
           placeholder="Search for your songs, artists, albums, playlists" />
         <button @click="showSearchBar = !showSearchBar; searchTerm = ''"
@@ -19,12 +16,12 @@
           X
         </button>
       </div>
-
     </div>
 
-    <div v-if="searchTerm && !loading" class="w-full px-4 py-2">
+    <div v-if="searchTerm && !isLoadingSearch" class="w-full px-4 py-2">
       <ul ref="list" class="space-y-4">
-        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults" :key="song._id">
+        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults"
+          :key="song._id">
           <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${song.album}`">
             <p class="text-sm">Song</p>
             <p class="text-sm font-semibold">{{ song.name }}</p>
@@ -42,7 +39,8 @@
           </RouterLink>
         </li>
 
-        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="album in searchAlbumsResults" :key="album._id">
+        <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="album in searchAlbumsResults"
+          :key="album._id">
           <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${album._id}`">
             <p class="text-sm">Album</p>
             <p class="text-sm font-semibold">{{ album.title }}</p>
@@ -52,32 +50,31 @@
         </li>
 
         <li
-          v-if="searchSongsResults.length === 0 && searchAlbumsResults.length === 0 && searchArtistResults.length === 0 && !loading"
-          class="text-white text-center">No results found</li>
+          v-if="searchSongsResults.length === 0 && searchAlbumsResults.length === 0 && searchArtistResults.length === 0 && !isLoadingSearch"
+          class="text-white text-center">No results found
+        </li>
       </ul>
     </div>
-    <div v-else-if="loading" class="flex justify-center items-center h-96">
-      <div class="loader">
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+    <div v-else-if="isLoadingSearch" class="flex justify-center items-center my-4">
+      <!-- Loader Spinner -->
+      <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-600"></div>
     </div>
 
 
-    <div v-else-if="!loading" class="px-4">
-      <h2 class="text-white text-4xl font-bold py-2">Albums</h2>
-      <div>
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Album class="bg-gray-900 p-2 rounded-lg animate-fadeIn hover:scale-105 transition" v-for="album in showedAlbums"
-            :key="album._id" :album="album" :albumImage="`${API_BASE_URL}/album/image/${album.image}`" />
-        </div>
-        <h2 class="text-white text-4xl font-bold py-2">Artists</h2>
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Artist class="bg-gray-900 p-2 rounded-lg animate-fadeIn hover:scale-105  transition" v-for="artist in showedArtists"
-            :key="artist._id" :artist="artist" :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
-        </div>
+    <div v-else-if="!isLoadingAlbums && !isLoadingArtists" class="px-4">
+      <h2 class="text-white text-2xl font-bold py-2">Albums</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 gap-y-6">
+        <Album class="bg-gray-900 p-2 rounded-lg animate-fadeIn hover:scale-105 transition"
+          v-for="album in showedAlbums" :key="album._id" :album="album"
+          :albumImage="`${API_BASE_URL}/album/image/${album.image}`" />
       </div>
+      <h2 class="text-white text-2xl font-bold py-2">Artists</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 gap-y-6">
+        <Artist class="bg-gray-900 p-2 rounded-lg animate-fadeIn hover:scale-105  transition"
+          v-for="artist in showedArtists" :key="artist._id" :artist="artist"
+          :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
+      </div>
+
 
     </div>
   </div>
@@ -97,12 +94,9 @@ import { API_BASE_URL } from "../../config";
 import Album from "../components/Album.vue";
 import Artist from "../components/Artist.vue";
 import Search from "../assets/icons/Search.vue"
-
-const token = localStorage.getItem("token");
-const decoded = JSON.parse(atob(token.split(".")[1]));
-const nick = decoded.nick;
-const loading = ref(false);
-
+const isLoadingSearch = ref(false);
+const isLoadingAlbums = ref(true);
+const isLoadingArtists = ref(true);
 const playlists = ref([]);
 const albums = ref([]);
 const state = reactive({
@@ -151,13 +145,13 @@ const updateIsMobile = () => {
 };
 
 onMounted(() => {
-  loading.value = true;
+  isLoadingAlbums.value = true;
+  isLoadingArtists.value = true;
   window.addEventListener("resize", updateIsMobile);
   window.addEventListener("keydown", handleKeyDown);
   fetchPlaylists();
   fetchArtists();
   fetchAlbums();
-  loading.value = false;
 });
 
 onBeforeUnmount(() => {
@@ -187,7 +181,8 @@ const fetchArtists = async () => {
     const res = await getArtists();
     state.artists = res.artists;
     const shuffledArtists = shuffleArray([...res.artists]); // Mezclar los artistas
-    showedArtists.value = shuffledArtists.slice(0, 5); // Tomar los primeros 5
+    showedArtists.value = shuffledArtists.slice(0, 6); // Tomar los primeros 5
+    isLoadingArtists.value = false;
   } catch (err) {
     console.log(err.message);
   }
@@ -198,7 +193,8 @@ const fetchAlbums = async () => {
     const res = await getRandomAlbums();
     albums.value = res.albums;
     const shuffledAlbums = shuffleArray([...res.albums]); // Mezclar los álbumes
-    showedAlbums.value = shuffledAlbums.slice(0, 5); // Tomar los primeros 5
+    showedAlbums.value = shuffledAlbums.slice(0, 6); // Tomar los primeros 5
+    isLoadingAlbums.value = false;
   } catch (err) {
     console.log(err.message);
   }
@@ -207,7 +203,7 @@ const fetchAlbums = async () => {
 
 
 const search = delay(async () => {
-  loading.value = true;
+  isLoadingSearch.value = true;
   if (searchTerm.value.length > 0) {
     const resSongs = await getSongsBySearch(searchTerm.value);
     const resAlbums = await getAlbumsBySearch(searchTerm.value);
@@ -221,61 +217,7 @@ const search = delay(async () => {
     fetchPlaylists();
     fetchAlbums();
   }
-  loading.value = false;
-}, 500); // El delay aquí es de 500ms
+  isLoadingSearch.value = false;
+}, 100); // El delay aquí es de 500ms
 
 </script>
-
-<style scoped>
-.loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  width: 50px;
-}
-
-.loader div {
-  width: 15px;
-  height: 15px;
-  margin: 3px;
-  background-color: #3498db;
-  border-radius: 50%;
-  animation: bounce 1.5s infinite ease-in-out;
-}
-
-.loader div:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loader div:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.result-item {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeIn 0.3s ease forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-@keyframes bounce {
-
-  0%,
-  80%,
-  100% {
-    transform: scale(0);
-  }
-
-  40% {
-    transform: scale(1);
-  }
-}
-</style>
