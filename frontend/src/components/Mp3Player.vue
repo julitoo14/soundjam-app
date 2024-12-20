@@ -56,7 +56,7 @@
             :style="{ width: `${(currentTime / duration) * 100}%` }"
           ></div>
           <input
-            class="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+            class="absolute top-0 left-0 w-full h-1 opacity-0 cursor-pointer"
             type="range"
             min="0"
             :max="duration"

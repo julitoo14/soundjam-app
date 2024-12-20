@@ -34,7 +34,7 @@
       </thead>
       <tbody >
         <Song
-          @playSong="$emit('playSong', song._id, song.album._id)"
+          @playSong="$emit('playSong', song._id, albumId)"
           @removeSong="removeSong(song._id)"
           @addSong="showAdd()"
           v-for="song in songs"
@@ -70,7 +70,6 @@ import {
   getSongsByAlbum,
   deleteAlbum,
   deleteSong,
-  getSong,
 } from "../../composables/apiServices";
 
 const route = useRoute();
@@ -107,23 +106,12 @@ const fetchSongs = async () => {
   try {
     const res = await getSongsByAlbum(albumId);
     songs.value = res.songs;
-    getFilesFromSongs();
     if (songs.value.length > 0) {
       showTable.value = true;
     }
   } catch (err) {
     console.log(err.response.data.message);
   }
-};
-
-const getFilesFromSongs = async () => {
-  const promises = songs.value.map(async (song) => {
-    const res = await getSong(song._id);
-    song = res.song;
-    song.file = `${API_BASE_URL}/song/file/${song.file}?token=${localStorage.getItem("token")}`;
-    return song;
-  });
-  songs.value = await Promise.all(promises);
 };
 
 const removeAlbum = async () => {

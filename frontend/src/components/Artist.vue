@@ -1,5 +1,5 @@
 <template>
-    <RouterLink class="nav-link" :to="`/artist/${props.artist._id}`">
+    <RouterLink class="nav-link" @click="console.log(props.artist)" :to="`/artist/${props.artist._id}`">
       <div class="flex flex-col items-center text-center gap-2 rounded-lg">
         <LazyImage
         class="object-cover flex-shrink-0"

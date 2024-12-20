@@ -22,7 +22,7 @@
       <ul ref="list" class="space-y-4">
         <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults"
           :key="song._id">
-          <RouterLink class="flex justify-between items-center w-full text-white" @click="$emit('playSong', song._id, song.album, 'search')" :to="`/album/${song.album}`">
+          <RouterLink class="flex justify-between items-center w-full text-white" @click="$emit('playSong', song._id, song.album)" :to="`/album/${song.album}`">
             <p class="text-sm">Song</p>
             <p class="text-sm font-semibold">{{ song.name }}</p>
             <p v-if="!isMobile" class="text-xs text-gray-400">{{ song.duration }}</p>
@@ -74,8 +74,6 @@
           v-for="artist in showedArtists" :key="artist._id" :artist="artist"
           :artistImage="`${API_BASE_URL}/artist/image/${artist.image}`" />
       </div>
-
-
     </div>
   </div>
 </template>
