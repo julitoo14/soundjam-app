@@ -13,8 +13,8 @@
         :alt="alt"
         class="loaded-image"
         @load="handleLoad"
-        @error="handleError"
         :class="{ hidden: isLoading }"
+        draggable="false"
       />
     </div>
   </template>
@@ -36,10 +36,6 @@
     isLoading.value = false; // Desactivar el loader cuando la imagen se cargue
   };
   
-  const handleError = () => {
-    console.error("Error loading image");
-    isLoading.value = false; // También eliminar el loader en caso de error
-  };
   </script>
   
   <style scoped>

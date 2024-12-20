@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-gray-950 pb-12 md:py-4 animate-fadeIn">
+  <div class=" pb-12 md:py-4 animate-fadeIn">
     <!-- Header Section -->
-    <div class="w-full md:w-3/4 m-auto grid grid-cols-1 md:grid-cols-3 items-center gap-4 p-4 bg-gray-800">
+    <div class="w-full md:w-3/4 m-auto grid grid-cols-1 md:grid-cols-3 items-center gap-4 p-4 ">
       <img class="w-48 h-48 md:w-32 md:h-32 rounded-full m-auto md:mx-0" :src="avatarUrl" alt="Avatar" />
       <div class="text-center md:text-left">
         <p class="text-purple-600 text-lg">Perfil</p>

@@ -13,7 +13,7 @@
       <!-- Componente Song -->
       <tbody>
         <Song
-          @playSong="$emit('playSong', song._id, songs)"
+          @playSong="$emit('playSong', song._id, song.album._id, playlistId)"
           @removeSong="removeSong(song._id)"
           @addSong="showAdd()"
           v-for="song in songs"
@@ -51,7 +51,6 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getSongsByPlaylist, getSong, removeSongFromPlaylist } from "../composables/apiServices";
 import { API_BASE_URL } from "../../config";
-
 const songs = ref([]);
 const playlistSongs = ref([]);
 const route = useRoute();

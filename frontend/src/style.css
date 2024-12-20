@@ -26,3 +26,16 @@ body, html {
   width: 100%;
   overflow: hidden; /* Evita que se produzca scroll en el body */
 }
+
+/* Evitar selección de texto */
+* {
+  user-select: none;
+}
+
+/* Evitar arrastrar imágenes, enlaces u otros elementos */
+a, img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}

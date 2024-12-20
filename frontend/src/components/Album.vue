@@ -1,6 +1,6 @@
 <template>
   <RouterLink class="nav-link" :to="`/album/${props.album._id}`">
-    <div class="flex flex-col items-center text-center gap-2 bg-gray-900 hover:bg-gray-800 rounded-lg">
+    <div class="flex flex-col items-center text-center gap-2 bg-gray-900 rounded-lg">
       <!-- Imagen con LazyImage -->
       <LazyImage
         class="object-cover flex-shrink-0"

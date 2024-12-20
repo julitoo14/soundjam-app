@@ -10,7 +10,7 @@
         <input ref="searchInput"
           class="z-0 w-full bg-gray-700 text-white placeholder-gray-400 p-4 pr-12 rounded focus:outline-none focus:ring focus:ring-purple-600 animate-fadeIn transition"
           v-model="searchTerm" @input="search" type="text"
-          placeholder="Search for your songs, artists, albums, playlists" />
+          placeholder="Search for your songs, artists, albums, playlists"/>
         <button @click="showSearchBar = !showSearchBar; searchTerm = ''"
           class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full h-8 w-8 flex items-center justify-center">
           X
@@ -18,11 +18,11 @@
       </div>
     </div>
 
-    <div v-if="searchTerm && !isLoadingSearch" class="w-full px-4 py-2">
+    <div v-if="searchTerm && !isLoadingSearch" class="w-full px-4 py-4">
       <ul ref="list" class="space-y-4">
         <li class="result-item flex items-center bg-gray-800 p-4 rounded-lg" v-for="song in searchSongsResults"
           :key="song._id">
-          <RouterLink class="flex justify-between items-center w-full text-white" :to="`/album/${song.album}`">
+          <RouterLink class="flex justify-between items-center w-full text-white" @click="$emit('playSong', song._id, song.album, 'search')" :to="`/album/${song.album}`">
             <p class="text-sm">Song</p>
             <p class="text-sm font-semibold">{{ song.name }}</p>
             <p v-if="!isMobile" class="text-xs text-gray-400">{{ song.duration }}</p>
@@ -94,6 +94,7 @@ import { API_BASE_URL } from "../../config";
 import Album from "../components/Album.vue";
 import Artist from "../components/Artist.vue";
 import Search from "../assets/icons/Search.vue"
+
 const isLoadingSearch = ref(false);
 const isLoadingAlbums = ref(true);
 const isLoadingArtists = ref(true);

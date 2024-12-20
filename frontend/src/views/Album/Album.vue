@@ -34,7 +34,7 @@
       </thead>
       <tbody >
         <Song
-          @playSong="$emit('playSong', song._id, songs)"
+          @playSong="$emit('playSong', song._id, song.album._id)"
           @removeSong="removeSong(song._id)"
           @addSong="showAdd()"
           v-for="song in songs"

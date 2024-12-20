@@ -1,22 +1,16 @@
 <template>
   <div
     v-bind="$attrs"
-    class=" bg-gray-900 border-t-4 border-purple-600 flex items-center justify-between px-4 py-2 h-24"
+    class="bg-gray-900 border-t-4 border-purple-600 flex items-center justify-between px-4 py-2 h-24"
   >
     <!-- Left Section -->
     <div v-if="getSongInfo()" class="flex items-center space-x-4 w-full max-w-sm">
       <div class="relative w-16 h-16">
-        <div v-if="loadingImage" class="absolute inset-0 flex items-center justify-center bg-gray-800 rounded-lg">
-          <span class="loader"></span>
-        </div>
-        <img
-          v-show="!loadingImage"
+        <LazyImage
+          class="object-cover flex-shrink-0 cursor-pointer"
           :src="`${API_BASE_URL}/album/image/${cover}`"
-          alt="Album Cover"
-          class="w-16 h-16 rounded-lg object-cover cursor-pointer"
-          @load="loadingImage = false"
-          @error="loadingImage = false; cover = 'default.png'"
-          @click="$router.push(`/album/${album._id}`)"
+          alt=""
+          @click="router.push(`/album/${album._id}`)" 
         />
       </div>
       <div class="overflow-hidden">
@@ -56,30 +50,42 @@
       </div>
       <div class="flex items-center gap-x-3 justify-center w-full text-white text-sm">
         <span>{{ formatTime(currentTime) }}</span>
-        <input
-          class="w-full h-2 bg-gray-500 rounded-lg appearance-none focus:outline-none focus:ring focus:ring-purple-600 transition"
-          type="range"
-          min="0"
-          :max="duration"
-          v-model="currentTime"
-          @input="seekAudio"
-          aria-label="Song progress"
-        />
+        <div class="relative w-full h-2 bg-gray-500 rounded-lg">
+          <div
+            class="absolute top-0 left-0 h-full bg-purple-600 rounded-lg"
+            :style="{ width: `${(currentTime / duration) * 100}%` }"
+          ></div>
+          <input
+            class="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+            type="range"
+            min="0"
+            :max="duration"
+            v-model="currentTime"
+            @input="seekAudio"
+            aria-label="Song progress"
+          />
+        </div>
         <span>{{ formatTime(duration) }}</span>
       </div>
     </div>
 
     <!-- Right Section -->
     <div class="hidden md:flex items-center justify-end w-full max-w-sm">
-      <input
-        type="range"
-        class="w-2/3 h-2 bg-gray-500 rounded-lg appearance-none focus:outline-none focus:ring focus:ring-purple-600 transition"
-        min="0"
-        max="1"
-        step="0.01"
-        v-model="volume"
-        aria-label="Volume control"
-      />
+      <div class="relative w-2/3 h-2 bg-gray-500 rounded-lg">
+        <div
+          class="absolute top-0 left-0 h-full bg-purple-600 rounded-lg"
+          :style="{ width: `${volume * 100}%` }"
+        ></div>
+        <input
+          class="absolute top-0 left-0 w-full h-2 opacity-0 cursor-pointer"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          v-model="volume"
+          aria-label="Volume control"
+        />
+      </div>
     </div>
   </div>
 
@@ -96,7 +102,6 @@
   ></audio>
 </template>
 
-
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import PlayIconVue from "../assets/icons/PlayIcon.vue";
@@ -105,6 +110,10 @@ import NextIcon from "../assets/icons/NextIcon.vue";
 import PreviousIcon from "../assets/icons/PreviousIcon.vue";
 import { getAlbum } from "../composables/apiServices";
 import { API_BASE_URL } from "../../config";
+import LazyImage from "./LazyImage.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const props = defineProps({
   files: {
@@ -121,7 +130,7 @@ const emit = defineEmits(["ended", "next", "previous"]);
 const audio = ref(null);
 const currentTime = ref(0);
 const duration = ref(0);
-const volume = ref(1);
+const volume = ref(0.5);
 const album = ref("");
 const cover = ref("default.png");
 const artist = ref("");
@@ -208,3 +217,29 @@ onMounted(() => {
   window.addEventListener("resize", updateIsMobile);
 });
 </script>
+
+<style scoped>
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 0;
+  width: 0;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+</style>
