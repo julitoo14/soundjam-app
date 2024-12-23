@@ -2,7 +2,9 @@
   <div class=" bg-gray-950 animate-fadeIn">
     <div class="container mx-auto">
       <div class="info p-6 flex flex-col md:flex-row gap-8 text-white">
-        <img :src="albumImage" alt="Album Cover" class="w-72 h-72 object-cover rounded m-auto md:!m-0" />
+        <div>
+          <LazyImage :src="albumImage" alt="Album Cover" class="w-72 h-72 object-cover m-auto md:!m-0" />
+        </div>
         <div class="album-info space-y-4">
           <h1 class="text-4xl font-bold">{{ album.title }}</h1>
           <h2 class="text-2xl font-medium">{{ artist.name }}</h2>
@@ -23,7 +25,7 @@
       </div>
     </div>
 
-    <table v-if="showTable" class="w-full md:w-4/5 mt-6 md:m-auto text-white">
+    <table v-if="showTable" class="w-full md:w-full mt-6 md:m-auto text-white">
       <thead class="bg-gray-800">
         <tr class="">
           <th scope="col" class="py-2 px-2 text-center">#</th>
@@ -71,6 +73,7 @@ import {
   deleteAlbum,
   deleteSong,
 } from "../../composables/apiServices";
+import LazyImage from "../../components/LazyImage.vue";
 
 const route = useRoute();
 const album = ref("");

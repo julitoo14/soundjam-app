@@ -10,7 +10,8 @@
           class="object-cover flex-shrink-0 cursor-pointer"
           :src="`${API_BASE_URL}/album/image/${cover}`"
           alt=""
-          @click="router.push(`/album/${album._id}`)" 
+          @click="router.push(`/album/${album._id}`)"
+
         />
       </div>
       <div class="overflow-hidden">
@@ -205,7 +206,6 @@ const formatTime = (timeInSeconds) => {
 };
 
 const handleAudioError = () => {
-  console.error("Error loading audio file.");
   isPlaying.value = false;
 };
 

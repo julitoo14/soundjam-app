@@ -2,7 +2,9 @@
   <div class=" pb-12 md:py-4 animate-fadeIn">
     <!-- Header Section -->
     <div class="w-full md:w-3/4 m-auto grid grid-cols-1 md:grid-cols-3 items-center gap-4 p-4 ">
-      <img class="w-48 h-48 md:w-32 md:h-32 rounded-full m-auto md:mx-0" :src="avatarUrl" alt="Avatar" />
+      <div class="w-48 h-48 md:w-32 md:h-32 flex m-auto">
+        <LazyImage class="w-48 h-48 md:w-32 md:h-32 rounded-full m-auto md:mx-0" :src="avatarUrl" alt="Avatar" />
+      </div>
       <div class="text-center md:text-left">
         <p class="text-purple-600 text-lg">Perfil</p>
         <h1 class="text-4xl font-bold text-white">{{ user.name }}</h1>
@@ -84,6 +86,7 @@ import AddPlaylist from "../components/AddPlaylist.vue";
 import { deletePlaylist, getPlaylistsByUser, getUserProfile } from "../composables/apiServices";
 import DeleteModal from "../components/DeleteModal.vue";
 import { API_BASE_URL } from "../../config";
+import LazyImage from "../components/LazyImage.vue";
 
 const route = useRoute();
 const router = useRouter();
