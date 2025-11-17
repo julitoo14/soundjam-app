@@ -68,9 +68,20 @@ export async function getSongsBySearch(search) {
     return response.data;
 }
 
-export async function getAlbumsBySearch(search) {
-    const response = await axios.get(`${API_BASE_URL}/album/search/${search}`,config);
+export async function getAlbumsBySearch(search = '') {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/album/search/${search}`,
+      {
+        headers: {
+          Authorization: localStorage.getItem('token')
+        }
+      }
+    );
     return response.data;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getArtistsBySearch(search) {
