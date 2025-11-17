@@ -22,7 +22,7 @@ const uploads = multer({storage});
 router.get('/prueba', albumController.prueba);
 router.post('/save', check.auth, albumController.save);
 router.get('/one/:id',check.auth, albumController.one);
-router.get('/search/:term', check.auth, albumController.search)
+router.get('/search/:term?', check.auth, albumController.search);
 router.get('/list/:artistId',check.auth, albumController.list);
 router.get('/randomList',check.auth, albumController.randomList);
 router.put('/update/:id', check.auth, albumController.update);

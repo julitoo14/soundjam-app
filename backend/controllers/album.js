@@ -101,26 +101,36 @@ const list = async (req, res) => {
 
 const search = async (req, res) => {
   const searchString = req.params.term;
-  try{
-    const albums = await Album.find({title: {$regex: searchString, $options: 'i'}}).exec();
-    if(!albums){
-      return res.status(404).send({
-        status: 'error',
-        message: 'No se han encontrado albums'
-      })
+
+  try {
+    let query = {};
+    
+    if (searchString && searchString !== 'undefined') {
+      query = {
+        $or: [
+          { title: { $regex: searchString, $options: 'i' } },
+          { description: { $regex: searchString, $options: 'i' } }
+        ]
+      };
     }
+
+    const albums = await Album.find(query)
+                           .populate('artist')
+                           .sort('-year')
+                           .exec();
 
     return res.status(200).send({
       status: 'success',
       albums
-    })
-  }catch(err){
+    });
+
+  } catch (err) {
     return res.status(500).send({
       status: 'error',
       message: err.message
-    })
+    });
   }
-}
+};
 
 const update = async (req, res) => {
   const albumId = req.params.id;
